@@ -63,6 +63,21 @@ void XNeuron::clearWeight(const QList<auto> &input)
     }
 }
 
+QList<double> XNeuron::weight() const
+{
+    return mWeight;
+}
+
+void XNeuron::setWeight(double A, double B)
+{
+    mWeight = QList<double>()<<A<<B;
+}
+
+void XNeuron::setWeight(const QList<double> &weight)
+{
+    mWeight = weight;
+}
+
 void XNeuron::setInput(const QList<double> &input)
 {
     mInput = input;

@@ -10,7 +10,6 @@ class /*XNEURONSHARED_EXPORT*/ XNeuron
 public:
     XNeuron();
 
-    QList<double> mWeight;
     QList<XNeuron> mNextNeuron;
 
     double outputReal() const;
@@ -27,10 +26,15 @@ public:
     void initWeight(const QList<auto> &input);
     void clearWeight(const QList<auto> &input);
 
+    QList<double> weight() const;
+    void setWeight(double A,double B);
+    void setWeight(const QList<double> &weight);
+
 private:
     QList<double> mInput;
     double mOutputReal;
     double mOutputRequired;
+    QList<double> mWeight;
 
 };
 
