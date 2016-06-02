@@ -1,0 +1,42 @@
+stages:
+  - build
+  - test
+
+build-test:
+  stage: build
+  script:
+   - cd XNeuronTest
+   - mkdir release
+   - cd release
+   - qmake ../XNeuronTest.pro  
+   - make -j4 check
+
+
+Windows:
+ stage: test
+ cache:
+   paths:
+   - XNeuronTest/release
+   key: "test1"
+ script:
+  - cd XNeuronTest\release
+  - dir
+  - tst_xneurontesttest.exe
+ tags:
+  - windows-*
+
+
+Linux:
+ stage: test
+ cache:
+   paths:
+   - JsonTest/release
+   key: "test1"
+ script:
+  - cd XNeuronTest/release
+  - ls
+  - ./tst_xneurontesttest
+  - cd ../../
+  - rm -r ./*
+ tags:
+  - linux-*
