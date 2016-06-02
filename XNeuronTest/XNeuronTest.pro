@@ -16,6 +16,8 @@ CONFIG -= std
 CONFIG += c++11
 QMAKE_CXXFLAGS = -std=c++11
 
+QMAKE_CXXFLAGS *= -std=gnu++11 -fno-keep-inline-dllexport
+
 TEMPLATE = app
 
 
