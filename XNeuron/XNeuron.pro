@@ -9,7 +9,7 @@ QT       -= gui
 TARGET = XNeuron
 TEMPLATE = lib
 
-CONFIG += c++11
+QMAKE_CXXFLAGS = -std=c++11
 
 DEFINES += XNEURON_LIBRARY
 
