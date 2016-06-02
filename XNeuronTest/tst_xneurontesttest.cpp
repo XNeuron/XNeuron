@@ -1,5 +1,6 @@
 #include <QString>
 #include <QtTest>
+#include <../XNeuron/xneuron.h>
 
 class XNeuronTestTest : public QObject
 {
@@ -10,6 +11,7 @@ public:
 
 private Q_SLOTS:
     void AND();
+    void OR();
 };
 
 XNeuronTestTest::XNeuronTestTest()
@@ -18,7 +20,44 @@ XNeuronTestTest::XNeuronTestTest()
 
 void XNeuronTestTest::AND()
 {
-    QVERIFY2(true, "Failure");
+    XNeuron XN;
+    bool A=false;
+    bool B=false;
+    XN.setInput(A,B);
+    QVERIFY2(((int)XN.outputReal())==0, "0&0");
+    A=false;
+    B=true;
+    XN.setInput(A,B);
+    QVERIFY2(((int)XN.outputReal())==0, "0&1");
+    B=false;
+    A=true;
+    XN.setInput(A,B);
+    QVERIFY2(((int)XN.outputReal())==0, "1&0");
+    A=true;
+    B=true;
+    XN.setInput(A,B);
+    QVERIFY2(((int)XN.outputReal())==1, "1&1");
+}
+
+void XNeuronTestTest::OR()
+{
+    XNeuron XN;
+    bool A=false;
+    bool B=false;
+    XN.setInput(A,B);
+    QVERIFY2(((int)XN.outputReal())==0, "0&0");
+    A=false;
+    B=true;
+    XN.setInput(A,B);
+    QVERIFY2(((int)XN.outputReal())<1, "0&1");
+    B=false;
+    A=true;
+    XN.setInput(A,B);
+    QVERIFY2(((int)XN.outputReal())<1, "1&0");
+    A=true;
+    B=true;
+    XN.setInput(A,B);
+    QVERIFY2(((int)XN.outputReal())<0, "1&1");
 }
 
 QTEST_APPLESS_MAIN(XNeuronTestTest)

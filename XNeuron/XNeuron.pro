@@ -9,6 +9,8 @@ QT       -= gui
 TARGET = XNeuron
 TEMPLATE = lib
 
+CONFIG += c++11
+
 DEFINES += XNEURON_LIBRARY
 
 SOURCES += xneuron.cpp
