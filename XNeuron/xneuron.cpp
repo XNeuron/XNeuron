@@ -63,7 +63,7 @@ void XNeuron::setInput(const QList<bool> &input)
 {
     QList<double> tInput;
     clearWeight(input);
-    for (auto& elem: input)
+    for (bool elem: input)
     {
         initWeight(input);
         tInput << (elem?1.0:0.0);
@@ -71,7 +71,7 @@ void XNeuron::setInput(const QList<bool> &input)
     setInput(tInput);
 }
 
-void XNeuron::initWeight(const QList<auto> &input)
+void XNeuron::initWeight(const QList<double> &input)
 {
     if(mWeight.length()!=input.length())
     {
@@ -79,7 +79,23 @@ void XNeuron::initWeight(const QList<auto> &input)
     }
 }
 
-void XNeuron::clearWeight(const QList<auto> &input)
+void XNeuron::clearWeight(const QList<double> &input)
+{
+    if(mWeight.length()!=input.length())
+    {
+        mWeight.clear();
+    }
+}
+
+void XNeuron::initWeight(const QList<bool> &input)
+{
+    if(mWeight.length()!=input.length())
+    {
+        mWeight.append(0.5);
+    }
+}
+
+void XNeuron::clearWeight(const QList<bool> &input)
 {
     if(mWeight.length()!=input.length())
     {
@@ -107,7 +123,7 @@ void XNeuron::setInput(const QList<double> &input)
     mInput = input;
     clearWeight(input);
     mOutputReal=0;
-    for (auto& elem: input)
+    for (const double& elem: input)
     {
         initWeight(input);
         mOutputReal+= elem*mWeight[input.indexOf(elem)];

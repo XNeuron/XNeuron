@@ -23,8 +23,11 @@ public:
     void setInput(const QList<bool> &input);
     void setInput(const QList<double> &input);
 
-    void initWeight(const QList<auto> &input);
-    void clearWeight(const QList<auto> &input);
+    void initWeight(const QList<bool> &input);
+    void clearWeight(const QList<bool> &input);
+
+    void initWeight(const QList<double> &input);
+    void clearWeight(const QList<double> &input);
 
     QList<double> weight() const;
     void setWeight(double A,double B);
