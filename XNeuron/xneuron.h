@@ -12,11 +12,11 @@ public:
 
     QList<XNeuron> mNextNeuron;
 
-    double outputReal() const;
-    void setOutputReal(double outputReal);
+    bool train(QList<QList<bool>> &input, QList<bool> &mOutputRequired);
 
-    double outputRequired() const;
-    void setOutputRequired(double outputRequired);
+    double outputReal() const;
+    bool outputBinary() const;
+    void setOutputReal(double outputReal);
 
     QList<double> input() const;
     void setInput(bool A,bool B);

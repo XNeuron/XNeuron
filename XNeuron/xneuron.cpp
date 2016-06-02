@@ -1,8 +1,37 @@
 #include "xneuron.h"
 
-
 XNeuron::XNeuron()
 {
+}
+
+bool XNeuron::train(QList<QList<bool>> &input, QList<bool> &mOutputRequired)
+{
+    bool ok=false;
+    for (int var = 0; true; ++var)
+    {
+        for (QList<bool>& x: input)
+        {
+            setInput(x);
+            double Required =mOutputRequired[input.indexOf(x)];
+            if(outputBinary()!=Required)
+            {
+                ok=false;
+                for (double& w: mWeight)
+                {
+                    double dx=x[mWeight.indexOf(w)]?1.0:0.0;
+                    w+=(Required-outputReal())*dx/mWeight.length();
+                }
+                break;
+            }else
+            {
+                ok=true;
+            }
+        }
+        if(ok)
+            return true;
+    }
+
+    return false;
 }
 
 double XNeuron::outputReal() const
@@ -10,19 +39,14 @@ double XNeuron::outputReal() const
     return mOutputReal;
 }
 
+bool XNeuron::outputBinary() const
+{
+    return (mOutputReal<0.75?0:1);
+}
+
 void XNeuron::setOutputReal(double outputReal)
 {
     mOutputReal = outputReal;
-}
-
-double XNeuron::outputRequired() const
-{
-    return mOutputRequired;
-}
-
-void XNeuron::setOutputRequired(double outputRequired)
-{
-    mOutputRequired = outputRequired;
 }
 
 QList<double> XNeuron::input() const
