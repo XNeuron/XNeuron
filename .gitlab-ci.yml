@@ -4,6 +4,10 @@ stages:
 
 build-test:
   stage: build
+  cache:
+   paths:
+   - XNeuronTest/release
+   key: "test1"
   script:
    - cd XNeuronTest
    - mkdir release
