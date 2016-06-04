@@ -16,10 +16,10 @@ Windows:
  stage: test
  cache:
    paths:
-   - 01_XNeuron/XNeuronTest/release
+   - 01_XNeuron/XNeuronTest/release/
    key: "test1"
  script:
-  - cd 01_XNeuron\XNeuronTest\release
+  - cd 01_XNeuron/XNeuronTest/release/
   - dir
   - tst_xneurontesttest.exe
  tags:
@@ -30,7 +30,7 @@ Linux:
  stage: test
  cache:
    paths:
-   - 01_XNeuron/XNeuronTest/release
+   - 01_XNeuron/XNeuronTest/release/
    key: "test1"
  script:
   - cd 01_XNeuron/XNeuronTest/release
