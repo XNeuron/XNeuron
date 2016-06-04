@@ -23,7 +23,7 @@ Windows:
    - 01_XNeuron/XNeuronTest/release
    key: "test1"
  script:
-  - cd 01_XNeuron/XNeuronTest/release
+  - cd 01_XNeuron\XNeuronTest\release
   - dir
   - tst_xneurontesttest.exe
  tags:
