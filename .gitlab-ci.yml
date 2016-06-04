@@ -6,10 +6,10 @@ build-test:
   stage: build
   cache:
    paths:
-   - XNeuronTest/release
+   - 01_XNeuron/XNeuronTest/release
    key: "test1"
   script:
-   - cd XNeuronTest
+   - cd 01_XNeuron/XNeuronTest
    - mkdir release
    - cd release
    - qmake ../XNeuronTest.pro  
@@ -20,10 +20,10 @@ Windows:
  stage: test
  cache:
    paths:
-   - XNeuronTest/release
+   - 01_XNeuron/XNeuronTest/release
    key: "test1"
  script:
-  - cd XNeuronTest\release
+  - cd 01_XNeuron/XNeuronTest/release
   - dir
   - tst_xneurontesttest.exe
  tags:
@@ -34,10 +34,10 @@ Linux:
  stage: test
  cache:
    paths:
-   - JsonTest/release
+   - 01_XNeuron/XNeuronTest/release
    key: "test1"
  script:
-  - cd XNeuronTest/release
+  - cd 01_XNeuron/XNeuronTest/release
   - ls
   - ./tst_xneurontesttest
   - cd ../../
