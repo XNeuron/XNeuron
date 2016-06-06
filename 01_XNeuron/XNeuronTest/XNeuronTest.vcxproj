@@ -141,21 +141,21 @@
     <ClInclude Include="..\XNeuron\xneuron.h" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="debug\tst_xneurontesttest.moc">
-      <FileType>Document</FileType>
+    <CustomBuild Include="Debug\tst_xneurontesttest.moc">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">tst_xneurontesttest.cpp;$(QTDIR)\bin\moc.exe;.\tst_xneurontesttest.cpp;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "tst_xneurontesttest.cpp" -o "$(ConfigurationName)\%(Filename).moc"  -D_CONSOLE -DUNICODE -DWIN32 -DWIN64 "-DSRCDIR=\"C:/Users/Gaara of the Desert/git/qt/XNeuron/01_XNeuron/XNeuronTest/\"" -DQT_TESTLIB_LIB -DQT_CORE_LIB "-DQT_TESTCASE_BUILDDIR=\"C:/Users/Gaara of the Desert/git/qt/XNeuron/01_XNeuron/XNeuronTest\""  "-I." "-IC:\Qt\5.6\msvc201564\include" "-IC:\Qt\5.6\msvc201564\include\QtTest" "-IC:\Qt\5.6\msvc201564\include\QtCore" "-I.\debug" "-IC:\Qt\5.6\msvc201564\mkspecs\win32-msvc2015" "-I$(QTDIR)\include\QtTest"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;.\tst_xneurontesttest.cpp</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing tst_xneurontesttest.cpp...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">debug\tst_xneurontesttest.moc;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ConfigurationName)\%(Filename).moc</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "tst_xneurontesttest.cpp" -o "$(ConfigurationName)\%(Filename).moc"  -D_CONSOLE -DUNICODE -DWIN32 -DWIN64 "-DSRCDIR=\"C:/Users/Gaara of the Desert/git/qt/XNeuron/01_XNeuron/XNeuronTest/\"" -DQT_TESTLIB_LIB -DQT_CORE_LIB "-DQT_TESTCASE_BUILDDIR=\"C:/Users/Gaara of the Desert/git/qt/XNeuron/01_XNeuron/XNeuronTest\"" "-I." "-IC:\Qt\5.6\msvc201564\include" "-IC:\Qt\5.6\msvc201564\include\QtTest" "-IC:\Qt\5.6\msvc201564\include\QtCore" "-I.\debug" "-IC:\Qt\5.6\msvc201564\mkspecs\win32-msvc2015" "-I$(QTDIR)\include\QtTest"</Command>
     </CustomBuild>
-    <CustomBuild Include="release\tst_xneurontesttest.moc">
-      <FileType>Document</FileType>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">tst_xneurontesttest.cpp;$(QTDIR)\bin\moc.exe;.\tst_xneurontesttest.cpp;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "tst_xneurontesttest.cpp" -o "$(ConfigurationName)\%(Filename).moc"  -D_CONSOLE -DUNICODE -DWIN32 -DWIN64 "-DSRCDIR=\"C:/Users/Gaara of the Desert/git/qt/XNeuron/01_XNeuron/XNeuronTest/\"" -DQT_NO_DEBUG -DQT_TESTLIB_LIB -DQT_CORE_LIB "-DQT_TESTCASE_BUILDDIR=\"C:/Users/Gaara of the Desert/git/qt/XNeuron/01_XNeuron/XNeuronTest\"" -DNDEBUG  "-I." "-IC:\Qt\5.6\msvc201564\include" "-IC:\Qt\5.6\msvc201564\include\QtTest" "-IC:\Qt\5.6\msvc201564\include\QtCore" "-I.\release" "-IC:\Qt\5.6\msvc201564\mkspecs\win32-msvc2015" "-I$(QTDIR)\include\QtTest"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing tst_xneurontesttest.cpp...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">release\tst_xneurontesttest.moc;%(Outputs)</Outputs>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Release\tst_xneurontesttest.moc">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;.\tst_xneurontesttest.cpp</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing tst_xneurontesttest.cpp...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ConfigurationName)\%(Filename).moc</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "tst_xneurontesttest.cpp" -o "$(ConfigurationName)\%(Filename).moc"  -D_CONSOLE -DUNICODE -DWIN32 -DWIN64 "-DSRCDIR=\"C:/Users/Gaara of the Desert/git/qt/XNeuron/01_XNeuron/XNeuronTest/\"" -DQT_NO_DEBUG -DQT_TESTLIB_LIB -DQT_CORE_LIB "-DQT_TESTCASE_BUILDDIR=\"C:/Users/Gaara of the Desert/git/qt/XNeuron/01_XNeuron/XNeuronTest\"" -DNDEBUG "-I." "-IC:\Qt\5.6\msvc201564\include" "-IC:\Qt\5.6\msvc201564\include\QtTest" "-IC:\Qt\5.6\msvc201564\include\QtCore" "-I.\release" "-IC:\Qt\5.6\msvc201564\mkspecs\win32-msvc2015" "-I$(QTDIR)\include\QtTest"</Command>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

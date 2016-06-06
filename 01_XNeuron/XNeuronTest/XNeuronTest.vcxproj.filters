@@ -25,6 +25,16 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Generated Files\Debug">
+      <UniqueIdentifier>{7cbdbe1f-f702-452e-9119-8489a0a2a144}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Release">
+      <UniqueIdentifier>{24f1b360-ae52-4177-8e62-9880dcacbb18}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tst_xneurontesttest.cpp">
@@ -40,11 +50,11 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="debug\tst_xneurontesttest.moc">
-      <Filter>Generierte Dateien</Filter>
+    <CustomBuild Include="Debug\tst_xneurontesttest.moc">
+      <Filter>Generated Files\Debug</Filter>
     </CustomBuild>
-    <CustomBuild Include="release\tst_xneurontesttest.moc">
-      <Filter>Generierte Dateien</Filter>
+    <CustomBuild Include="Release\tst_xneurontesttest.moc">
+      <Filter>Generated Files\Release</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>
