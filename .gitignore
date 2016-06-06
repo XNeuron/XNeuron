@@ -29,3 +29,6 @@ _ReSharper*/
 [Tt]est[Rr]esult*
 *build*
 *.pro.user.*
+*release*
+*.VC.db
+*.VC.VC.opendb
