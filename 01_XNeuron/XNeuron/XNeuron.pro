@@ -17,10 +17,12 @@ QMAKE_CXXFLAGS = -std=gnu++11
 
 DEFINES += XNEURON_LIBRARY
 
-SOURCES += xneuron.cpp
+SOURCES += xneuron.cpp \
+    ActivityFunction.cpp
 
 HEADERS += xneuron.h\
-        xneuron_global.h
+        xneuron_global.h \
+    ActivityFunction.h
 
 unix {
     target.path = /usr/lib

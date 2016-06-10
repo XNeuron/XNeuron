@@ -6,156 +6,172 @@ XNeuron::XNeuron()
 
 bool XNeuron::train(QList<QList<bool>> &xInput, QList<bool> &xOutputRequired)
 {
-	QList<QList<double>> mInput;
-	QList<double> mOutputRequired;
+    QList<QList<double>> mInput;
+    QList<double> mOutputRequired;
 
-	for (QList<bool>& x : xInput)
-	{
-		QList<double> temp;
-		for (bool& y : x)
-		{
-			temp.append((y) ? (1) : (0));
-		}
-		mInput.append(temp);
-		mOutputRequired.append((xOutputRequired[xInput.indexOf(x)]) ? (1) : (0));
-	}
-	return train(mInput, mOutputRequired);
+    for (QList<bool>& x : xInput)
+    {
+        QList<double> temp;
+        for (bool& y : x)
+        {
+            temp.append((y) ? (1) : (-1));
+        }
+        mInput.append(temp);
+        mOutputRequired.append((xOutputRequired[xInput.indexOf(x)]) ? (1) : (-1));
+    }
+    return train(mInput, mOutputRequired, ActivityFunction::Binary);
 }
 
-bool XNeuron::train(QList<QList<double>> &input, QList<double> &mOutputRequired)
+bool XNeuron::train(QList<QList<double>> &xInput, QList<double> &xOutputRequired,ActivityFunction::ActFunction xFunc )
 {
-	for (int var = 0; 1000; ++var)
-	{
-		double error = 0;
-		for (QList<double>& x : input)
-		{
-			double temp = 0;
-			for (int i = 0; i < x.length(); i++)//double& value : x)
-			{
-				temp += x[i]*mWeight[i];
-			}
+    mFunc=xFunc;
+    qsrand(QTime::currentTime().msec());
+    int check=5;
+    for (int var = 0;var<1000; var++)
+    {
+        double N=1;
+        do
+        {
+            N=((double)((qrand())%1000))/(1000);
+        }while(N==0);
 
-			double y = (temp >= mBase) ? (1) : (0);
+        double error = xInput.size()+check;
+        for (QList<double>& x : xInput)
+        {
+            setInput(x);
+            int tIndexOfInput=xInput.indexOf(x);
 
-			if (y != mOutputRequired[input.indexOf(x)]) 
-			{
+            double delta = xOutputRequired[tIndexOfInput] - mOutput;
+            if (delta!=0)
+            {
+                mBias = mBias - N*delta;
 
-				double delta = mOutputRequired[input.indexOf(x)] - y;
+                for (int i = 0; i < mWeight.length();i++)
+                {
+                    mWeight[i] = mWeight[i] + N*delta*x[i];
+                }
+            }
+            else
+                error--;
+        }
+        if(error<=check)
+            check--;
+        if (error <= 0)
+            return true;
+    }
 
-				mBase = mBase - delta;
-
-				for (int i = 0; i < mWeight.length();i++)//double& value : mWeight)
-				{
-					mWeight[i] = mWeight[i] + delta*x[i];
-				}
-
-				error ++;
-			}
-		}
-		if (error <= 0)
-			return true;
-	}
-
-	return false;
+    return false;
 }
 
-double XNeuron::outputReal() const
+double XNeuron::outputLine() const
 {
-	return mOutputReal;
+    return mOutput;
+}
+
+double XNeuron::outputLine(ActivityFunction::ActFunction xFunc) const
+{
+    return ActivityFunction::BinaryFunc(mOutput,mBias);
 }
 
 bool XNeuron::outputBinary() const
 {
-	return   mOutputReal >= mBase;//(mOutputReal < 0.75 ? 0 : 1);
-}
-
-void XNeuron::setOutputReal(double outputReal)
-{
-	mOutputReal = outputReal;
+    return mOutput > 0;
 }
 
 QList<double> XNeuron::input() const
 {
-	return mInput;
+    return mInput;
 }
 
 void XNeuron::setInput(bool A, bool B)
 {
-	setInput(QList<bool>() << A << B);
+    setInput(QList<bool>() << A << B);
 }
 
 void XNeuron::setInput(const QList<bool> &input)
 {
-	QList<double> tInput;
-	clearWeight(input);
-	for (bool elem : input)
-	{
-		initWeight(input);
-		tInput << (elem ? 1.0 : 0.0);
-	}
-	setInput(tInput);
+    QList<double> tInput;
+    ClearWeight(input);
+    for (bool elem : input)
+    {
+        initWeight(input);
+        tInput << (elem ? 1.0 : -1.0);
+    }
+    setInput(tInput);
 }
 
 void XNeuron::initWeight(const QList<double> &input)
 {
-	if (mWeight.length() != input.length())
-	{
-		mWeight.append(0.5);
-	}
+    qsrand(QTime::currentTime().msec());
+    if (mWeight.length() != input.length())
+    {
+        mWeight.append(qrand());
+    }
 }
 
-void XNeuron::clearWeight(const QList<double> &input)
+void XNeuron::ClearWeight(const QList<double> &input)
 {
-	if (mWeight.length() != input.length())
-	{
-		mWeight.clear();
-	}
+    if (mWeight.length() != input.length())
+    {
+        mWeight.clear();
+    }
 }
 
 void XNeuron::initWeight(const QList<bool> &input)
 {
-	if (mWeight.length() != input.length())
-	{
-		mWeight.append(0.5);
-	}
+    qsrand(QTime::currentTime().msec());
+    if (mWeight.length() != input.length())
+    {
+        mWeight.append(qrand());
+    }
 }
 
-void XNeuron::clearWeight(const QList<bool> &input)
+void XNeuron::ClearWeight(const QList<bool> &input)
 {
-	if (mWeight.length() != input.length())
-	{
-		mWeight.clear();
-	}
+    if (mWeight.length() != input.length())
+    {
+        mWeight.clear();
+    }
 }
 
 QList<double> XNeuron::weight() const
 {
-	return mWeight;
+    return mWeight;
 }
 
 void XNeuron::setWeight(double A, double B)
 {
-	mWeight = QList<double>() << A << B;
+    mWeight = QList<double>() << A << B;
 }
 
 void XNeuron::setWeight(double A, double B, double C)
 {
-	mWeight = QList<double>() << A << B << C;
+    mWeight = QList<double>() << A << B << C;
 }
 
 void XNeuron::setWeight(const QList<double> &weight)
 {
-	mWeight = weight;
+    mWeight = weight;
+}
+
+double XNeuron::bias() const
+{
+    return mBias;
+}
+
+void XNeuron::CalcOutput()
+{
+    mOutput = 0;
+    for (int i = 0; i < mInput.length(); i++)
+    {
+        mOutput += mInput[i]*mWeight[i];
+    }
+    mOutput = ActivityFunction::giveActivityFunction(mFunc,mOutput,mBias);
 }
 
 void XNeuron::setInput(const QList<double> &input)
 {
-	mInput = input;
-	clearWeight(input);
-	mOutputReal = 0;
-	for (const double& elem : input)
-	{
-		initWeight(input);
-		mOutputReal += elem*mWeight[input.indexOf(elem)];
-	}
+    mInput = input;
+    ClearWeight(input);
+    CalcOutput();
 }

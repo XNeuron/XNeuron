@@ -3,6 +3,9 @@
 
 /*#include "xneuron_global.h"*/
 #include <QList>
+#include <QTime>
+#include <QtMath>
+#include "ActivityFunction.h"
 
 class /*XNEURONSHARED_EXPORT*/ XNeuron
 {
@@ -13,11 +16,12 @@ public:
 	QList<XNeuron> mNextNeuron;
 
 	bool train(QList<QList<bool>> &input, QList<bool> &mOutputRequired);
-	bool train(QList<QList<double>> &input, QList<double> &mOutputRequired);
+    bool train(QList<QList<double>> &input, QList<double> &mOutputRequired,ActivityFunction::ActFunction);
 
-	double outputReal() const;
-	bool outputBinary() const;
-	void setOutputReal(double outputReal);
+    double outputLine() const;
+    bool outputBinary() const;
+    double outputLine(ActivityFunction::ActFunction xFunc) const;
+
 
 	QList<double> input() const;
 	void setInput(bool A, bool B);
@@ -25,21 +29,25 @@ public:
 	void setInput(const QList<double> &input);
 
 	void initWeight(const QList<bool> &input);
-	void clearWeight(const QList<bool> &input);
+    void ClearWeight(const QList<bool> &input);
 
 	void initWeight(const QList<double> &input);
-	void clearWeight(const QList<double> &input);
+    void ClearWeight(const QList<double> &input);
 
 	QList<double> weight() const;
 	void setWeight(double A, double B);
 	void setWeight(double A, double B, double C);
 	void setWeight(const QList<double> &weight);
 
+    double bias() const;
+
+    void CalcOutput();
+
 private:
-	QList<double> mInput;
-	double mOutputReal = 0;
-	double mOutputRequired = 0;
-	double mBase = 0;
+    QList<double> mInput;
+    double mOutput = 0;
+    double mBias = 0;
+    ActivityFunction::ActFunction mFunc;
 	QList<double> mWeight;
 
 };
