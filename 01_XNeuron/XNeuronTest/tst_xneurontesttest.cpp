@@ -12,12 +12,19 @@ public:
     void Check(QList<bool> o, QList<QList<bool>> i, OnlineTraining XN);
     void Check(QList<double> o, QList<QList<double>> i, OnlineTraining XN);
 
+private:
+    OnlineTraining XNAND;
+    OnlineTraining XNAND2;
+    OnlineTraining XNOR;
+    OnlineTraining XNOR2;
+    OnlineTraining XNADD;
+
 private Q_SLOTS:
     void AND();
     void AND2();
     void OR();
     void OR2();
-    void Plus();
+    void ADD();
 };
 
 XNeuronTestTest::XNeuronTestTest()
@@ -38,7 +45,7 @@ void XNeuronTestTest::Check(QList<bool> o, QList<QList<bool>> i, OnlineTraining 
         }
         QStringList str2;
         str2.append(str.join("x"));
-        str2.append(QString().number(XN.outputLine()));
+        str2.append(QString().number(XN.output()));
         str2.append(QString().number(XN.bias()));
         str2.append(XN.outputBinary()?"1":"0");
         str2.append(o[index]?"1":"0");
@@ -59,11 +66,11 @@ void XNeuronTestTest::Check(QList<double> o, QList<QList<double>> i, OnlineTrain
         }
         QStringList str2;
         str2.append(str.join("x"));
-        str2.append(QString().number(XN.outputLine()));
+        str2.append(QString().number(XN.output()));
         str2.append(QString().number(XN.bias()));
-        str2.append(QString().number(XN.outputLine()));
+        str2.append(QString().number(XN.output()));
         str2.append(QString().number(o[index]));
-        QVERIFY2(XN.outputLine() == o[index],str2.join("=").toStdString().c_str());
+        QVERIFY2(XN.output() == o[index],str2.join("=").toStdString().c_str());
     }
 }
 
@@ -71,8 +78,7 @@ void XNeuronTestTest::AND()
 {
     QList<QList<bool>> i;
     QList<bool> o;
-    OnlineTraining XN;
-    XN.setWeight(0, 0);
+    XNAND.setWeight(0, 0);
 
     i.append(QList<bool>() << false << false);
     i.append(QList<bool>() << false << true);
@@ -83,16 +89,15 @@ void XNeuronTestTest::AND()
     o.append(false);
     o.append(true);
 
-    XN.train(i, o);
-    Check(o, i, XN);
+    XNAND.train(i, o);
+    Check(o, i, XNAND);
 }
 
 void XNeuronTestTest::AND2()
 {
     QList<QList<bool>> i;
     QList<bool> o;
-    OnlineTraining XN;
-    XN.setWeight(0, 0, 0);
+    XNAND2.setWeight(0, 0, 0);
 
     i.append(QList<bool>() << false << false << false);
     i.append(QList<bool>() << false << true << false);
@@ -111,8 +116,8 @@ void XNeuronTestTest::AND2()
     o.append(true & false & true);
     o.append(true & true & true);
 
-    XN.train(i, o);
-    Check(o, i, XN);
+    XNAND2.train(i, o);
+    Check(o, i, XNAND2);
 }
 
 
@@ -120,8 +125,7 @@ void XNeuronTestTest::OR()
 {
     QList<QList<bool>> i;
     QList<bool> o;
-    OnlineTraining XN;
-    XN.setWeight(0, 0);
+    XNOR.setWeight(0, 0);
 
     i.append(QList<bool>() << false << false);
     i.append(QList<bool>() << false << true);
@@ -132,16 +136,15 @@ void XNeuronTestTest::OR()
     o.append(true);
     o.append(true);
 
-    XN.train(i, o);
-    Check(o, i, XN);
+    XNOR.train(i, o);
+    Check(o, i, XNOR);
 }
 
 void XNeuronTestTest::OR2()
 {
     QList<QList<bool>> i;
     QList<bool> o;
-    OnlineTraining XN;
-    XN.setWeight(0, 0, 0);
+    XNOR2.setWeight(0, 0, 0);
 
     i.append(QList<bool>() << false << false << false);
     i.append(QList<bool>() << false << true << false);
@@ -160,16 +163,15 @@ void XNeuronTestTest::OR2()
     o.append(true | false | true);
     o.append(true | true | true);
 
-    XN.train(i, o);
-    Check(o, i, XN);
+    XNOR2.train(i, o);
+    Check(o, i, XNOR2);
 }
 
-void XNeuronTestTest::Plus()
+void XNeuronTestTest::ADD()
 {
     QList<QList<double>> i;
     QList<double> o;
-    OnlineTraining XN;
-    XN.setWeight(1, 1, 1);
+    XNADD.setWeight(1, 1, 1);
 
     i.append(QList<double>() << 1.0 << 1.5 << 2.0);
     i.append(QList<double>() << 3.5 << 2.8 << 3.25);
@@ -178,8 +180,8 @@ void XNeuronTestTest::Plus()
     o.append(3.5 + 2.8 + 3.25);
     o.append(15.25 + 14 + 100);
 
-    XN.train(i, o, ActivityFunction::Line);
-    Check(o, i, XN);
+    XNADD.train(i, o, ActivityFunction::Line);
+    Check(o, i, XNADD);
 }
 
 QTEST_APPLESS_MAIN(XNeuronTestTest)

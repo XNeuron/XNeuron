@@ -16,9 +16,9 @@ public:
     virtual bool train(QList<QList<bool>> &input, QList<bool> &mOutputRequired);
     virtual bool train(QList<QList<double>> &input, QList<double> &mOutputRequired,ActivityFunction::ActFunction);
 
-    virtual double outputLine() const;
+    virtual double output() const;
     virtual bool outputBinary() const;
-    virtual double outputLine(ActivityFunction::ActFunction xFunc) const;
+    virtual double output(ActivityFunction::ActFunction xFunc) const;
 
 
     virtual QList<double> input() const;

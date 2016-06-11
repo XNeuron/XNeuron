@@ -23,12 +23,12 @@ bool XNeuron::train(QList<QList<double>> &xInput, QList<double> &xOutputRequired
     return false;
 }
 
-double XNeuron::outputLine() const
+double XNeuron::output() const
 {
     return mOutput;
 }
 
-double XNeuron::outputLine(ActivityFunction::ActFunction xFunc) const
+double XNeuron::output(ActivityFunction::ActFunction xFunc) const
 {
     return ActivityFunction::BinaryFunc(mOutput,mBias);
 }
