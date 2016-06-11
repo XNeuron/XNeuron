@@ -1,6 +1,6 @@
 #include <QString>
 #include <QtTest>
-#include <../XNeuron/xneuron.h>
+#include <../XNeuron/OnlineTraining.h>
 
 class XNeuronTestTest : public QObject
 {
@@ -8,6 +8,9 @@ class XNeuronTestTest : public QObject
 
 public:
     XNeuronTestTest();
+
+    void Check(QList<bool> o, QList<QList<bool>> i, OnlineTraining XN);
+    void Check(QList<double> o, QList<QList<double>> i, OnlineTraining XN);
 
 private Q_SLOTS:
     void AND();
@@ -19,25 +22,11 @@ private Q_SLOTS:
 
 XNeuronTestTest::XNeuronTestTest()
 {
+
 }
 
-void XNeuronTestTest::AND()
+void XNeuronTestTest::Check(QList<bool> o, QList<QList<bool>> i, OnlineTraining XN)
 {
-    QList<QList<bool>> i;
-    QList<bool> o;
-    XNeuron XN;
-    XN.setWeight(0, 0);
-
-    i.append(QList<bool>() << false << false);
-    i.append(QList<bool>() << false << true);
-    i.append(QList<bool>() << true << false);
-    i.append(QList<bool>() << true << true);
-    o.append(false);
-    o.append(false);
-    o.append(false);
-    o.append(true);
-
-    XN.train(i, o);
     for (QList<bool>& elem : i)
     {
         XN.setInput(elem);
@@ -57,11 +46,52 @@ void XNeuronTestTest::AND()
     }
 }
 
+void XNeuronTestTest::Check(QList<double> o, QList<QList<double>> i, OnlineTraining XN)
+{
+    for (QList<double>& elem : i)
+    {
+        XN.setInput(elem);
+        int index = i.indexOf(elem);
+        QStringList str;
+        for (double& e : elem)
+        {
+            str.append(QString().number(e));
+        }
+        QStringList str2;
+        str2.append(str.join("x"));
+        str2.append(QString().number(XN.outputLine()));
+        str2.append(QString().number(XN.bias()));
+        str2.append(QString().number(XN.outputLine()));
+        str2.append(QString().number(o[index]));
+        QVERIFY2(XN.outputLine() == o[index],str2.join("=").toStdString().c_str());
+    }
+}
+
+void XNeuronTestTest::AND()
+{
+    QList<QList<bool>> i;
+    QList<bool> o;
+    OnlineTraining XN;
+    XN.setWeight(0, 0);
+
+    i.append(QList<bool>() << false << false);
+    i.append(QList<bool>() << false << true);
+    i.append(QList<bool>() << true << false);
+    i.append(QList<bool>() << true << true);
+    o.append(false);
+    o.append(false);
+    o.append(false);
+    o.append(true);
+
+    XN.train(i, o);
+    Check(o, i, XN);
+}
+
 void XNeuronTestTest::AND2()
 {
     QList<QList<bool>> i;
     QList<bool> o;
-    XNeuron XN;
+    OnlineTraining XN;
     XN.setWeight(0, 0, 0);
 
     i.append(QList<bool>() << false << false << false);
@@ -82,24 +112,7 @@ void XNeuronTestTest::AND2()
     o.append(true & true & true);
 
     XN.train(i, o);
-
-    for (QList<bool>& elem : i)
-    {
-        XN.setInput(elem);
-        int index = i.indexOf(elem);
-        QStringList str;
-        for (bool& e : elem)
-        {
-            str.append(e?"1":"0");
-        }
-        QStringList str2;
-        str2.append(str.join("x"));
-        str2.append(QString().number(XN.outputLine()));
-        str2.append(QString().number(XN.bias()));
-        str2.append(XN.outputBinary()?"1":"0");
-        str2.append(o[index]?"1":"0");
-        QVERIFY2(XN.outputBinary() == o[index],str2.join("=").toStdString().c_str());
-    }
+    Check(o, i, XN);
 }
 
 
@@ -107,7 +120,7 @@ void XNeuronTestTest::OR()
 {
     QList<QList<bool>> i;
     QList<bool> o;
-    XNeuron XN;
+    OnlineTraining XN;
     XN.setWeight(0, 0);
 
     i.append(QList<bool>() << false << false);
@@ -120,30 +133,14 @@ void XNeuronTestTest::OR()
     o.append(true);
 
     XN.train(i, o);
-    for (QList<bool>& elem : i)
-    {
-        XN.setInput(elem);
-        int index = i.indexOf(elem);
-        QStringList str;
-        for (bool& e : elem)
-        {
-            str.append(e?"1":"0");
-        }
-        QStringList str2;
-        str2.append(str.join("x"));
-        str2.append(QString().number(XN.outputLine()));
-        str2.append(QString().number(XN.bias()));
-        str2.append(XN.outputBinary()?"1":"0");
-        str2.append(o[index]?"1":"0");
-        QVERIFY2(XN.outputBinary() == o[index],str2.join("=").toStdString().c_str());
-    }
+    Check(o, i, XN);
 }
 
 void XNeuronTestTest::OR2()
 {
     QList<QList<bool>> i;
     QList<bool> o;
-    XNeuron XN;
+    OnlineTraining XN;
     XN.setWeight(0, 0, 0);
 
     i.append(QList<bool>() << false << false << false);
@@ -164,31 +161,14 @@ void XNeuronTestTest::OR2()
     o.append(true | true | true);
 
     XN.train(i, o);
-
-    for (QList<bool>& elem : i)
-    {
-        XN.setInput(elem);
-        int index = i.indexOf(elem);
-        QStringList str;
-        for (bool& e : elem)
-        {
-            str.append(e?"1":"0");
-        }
-        QStringList str2;
-        str2.append(str.join("x"));
-        str2.append(QString().number(XN.outputLine()));
-        str2.append(QString().number(XN.bias()));
-        str2.append(XN.outputBinary()?"1":"0");
-        str2.append(o[index]?"1":"0");
-        QVERIFY2(XN.outputBinary() == o[index],str2.join("=").toStdString().c_str());
-    }
+    Check(o, i, XN);
 }
 
 void XNeuronTestTest::Plus()
 {
     QList<QList<double>> i;
     QList<double> o;
-    XNeuron XN;
+    OnlineTraining XN;
     XN.setWeight(1, 1, 1);
 
     i.append(QList<double>() << 1.0 << 1.5 << 2.0);
@@ -199,24 +179,7 @@ void XNeuronTestTest::Plus()
     o.append(15.25 + 14 + 100);
 
     XN.train(i, o, ActivityFunction::Line);
-
-    for (QList<double>& elem : i)
-    {
-        XN.setInput(elem);
-        int index = i.indexOf(elem);
-        QStringList str;
-        for (double& e : elem)
-        {
-            str.append(QString().number(e));
-        }
-        QStringList str2;
-        str2.append(str.join("+"));
-        str2.append(QString().number(XN.outputLine()));
-        str2.append(QString().number(XN.bias()));
-        str2.append(QString().number(XN.outputLine()));
-        str2.append(QString().number(o[index]));
-        QVERIFY2(XN.outputLine() == o[index],str2.join("=").toStdString().c_str());
-    }
+    Check(o, i, XN);
 }
 
 QTEST_APPLESS_MAIN(XNeuronTestTest)

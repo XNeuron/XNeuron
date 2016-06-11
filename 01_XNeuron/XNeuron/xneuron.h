@@ -11,37 +11,35 @@ class /*XNEURONSHARED_EXPORT*/ XNeuron
 {
 
 public:
-	XNeuron();
+    QList<XNeuron> mNextNeuron;
 
-	QList<XNeuron> mNextNeuron;
+    virtual bool train(QList<QList<bool>> &input, QList<bool> &mOutputRequired);
+    virtual bool train(QList<QList<double>> &input, QList<double> &mOutputRequired,ActivityFunction::ActFunction);
 
-	bool train(QList<QList<bool>> &input, QList<bool> &mOutputRequired);
-    bool train(QList<QList<double>> &input, QList<double> &mOutputRequired,ActivityFunction::ActFunction);
-
-    double outputLine() const;
-    bool outputBinary() const;
-    double outputLine(ActivityFunction::ActFunction xFunc) const;
+    virtual double outputLine() const;
+    virtual bool outputBinary() const;
+    virtual double outputLine(ActivityFunction::ActFunction xFunc) const;
 
 
-	QList<double> input() const;
-	void setInput(bool A, bool B);
-	void setInput(const QList<bool> &input);
-	void setInput(const QList<double> &input);
+    virtual QList<double> input() const;
+    virtual void setInput(bool A, bool B);
+    virtual void setInput(const QList<bool> &input);
+    virtual void setInput(const QList<double> &input);
 
-	void initWeight(const QList<bool> &input);
-    void ClearWeight(const QList<bool> &input);
+    virtual void initWeight(const QList<bool> &input);
+    virtual void ClearWeight(const QList<bool> &input);
 
-	void initWeight(const QList<double> &input);
-    void ClearWeight(const QList<double> &input);
+    virtual void initWeight(const QList<double> &input);
+    virtual void ClearWeight(const QList<double> &input);
 
-	QList<double> weight() const;
-	void setWeight(double A, double B);
-	void setWeight(double A, double B, double C);
-	void setWeight(const QList<double> &weight);
+    virtual QList<double> weight() const;
+    virtual void setWeight(double A, double B);
+    virtual void setWeight(double A, double B, double C);
+    virtual void setWeight(const QList<double> &weight);
 
-    double bias() const;
+    virtual double bias() const;
 
-    void CalcOutput();
+    virtual void CalcOutput();
 
 private:
     QList<double> mInput;
@@ -51,5 +49,5 @@ private:
 	QList<double> mWeight;
 
 };
-
+Q_DECLARE_INTERFACE(XNeuron, "Xma1.XNeuron/1.0")
 #endif // XNEURON_H

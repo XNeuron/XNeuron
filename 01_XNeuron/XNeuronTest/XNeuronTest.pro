@@ -22,10 +22,12 @@ TEMPLATE = app
 
 SOURCES += tst_xneurontesttest.cpp \
     ../XNeuron/ActivityFunction.cpp \
+    ../XNeuron/OnlineTraining.cpp \
     ../XNeuron/xneuron.cpp
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 HEADERS += \
     ../XNeuron/ActivityFunction.h \
+    ../XNeuron/OnlineTraining.h \
     ../XNeuron/xneuron.h
