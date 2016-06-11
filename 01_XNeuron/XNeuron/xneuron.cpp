@@ -1,5 +1,27 @@
 #include "xneuron.h"
 
+ XNeuron::~XNeuron()
+{
+	/*for (int i=0;i<mNextNeuron.length();i++)
+	{
+		delete mNextNeuron[i];
+	}
+	mNextNeuron.clear();
+	
+	for (int i = 0; i<mNextNeuron.length(); i++)
+	{
+		delete mNextNeuron[i];
+	}
+	mNextNeuron.clear();
+
+	for (XNeuron* del : mFirstNeuron)
+	{
+		delete del;
+		del = NULL;
+	}
+	mNextNeuron.clear();*/
+}
+
 bool XNeuron::train(QList<QList<bool>> &xInput, QList<bool> &xOutputRequired)
 {
     QList<QList<double>> mInput;

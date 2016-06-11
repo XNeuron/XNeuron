@@ -11,7 +11,11 @@ class /*XNEURONSHARED_EXPORT*/ XNeuron
 {
 
 public:
-    QList<XNeuron> mNextNeuron;
+    QList<XNeuron*> mNextNeuron;
+	QList<XNeuron*> mLastNeuron;
+	QList<XNeuron*> mFirstNeuron;
+
+	~XNeuron();
 
     virtual bool train(QList<QList<bool>> &input, QList<bool> &mOutputRequired);
     virtual bool train(QList<QList<double>> &input, QList<double> &mOutputRequired,ActivityFunction::ActFunction);
