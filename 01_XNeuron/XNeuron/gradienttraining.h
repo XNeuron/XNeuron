@@ -6,8 +6,8 @@ class GradientTraining : public XNeuron
 {
 public:
     GradientTraining();
-
-    bool train(QList<QList<double> > &xInput, QList<double> &xOutputRequired, ActivityFunction::ActFunction xFunc);
+    bool train(QList<QList<bool>> &input, QList<bool> &mOutputRequired);
+    bool train(QList<QList<double>> &input, QList<double> &mOutputRequired,ActivityFunction::ActFunction);
 };
 
 #endif // GRADIENTTRAINING_H

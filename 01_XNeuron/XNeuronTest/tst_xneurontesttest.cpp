@@ -1,6 +1,6 @@
 #include <QString>
 #include <QtTest>
-#include <../XNeuron/OnlineTraining.h>
+#include <../XNeuron/gradienttraining.h>
 
 class XNeuronTestTest : public QObject
 {
@@ -9,15 +9,15 @@ class XNeuronTestTest : public QObject
 public:
     XNeuronTestTest();
 
-    void Check(QList<bool> o, QList<QList<bool>> i, OnlineTraining XN);
-    void Check(QList<double> o, QList<QList<double>> i, OnlineTraining XN);
+    void Check(QList<bool> o, QList<QList<bool>> i, XNeuron XN);
+    void Check(QList<double> o, QList<QList<double>> i, XNeuron XN);
 
 private:
-    OnlineTraining XNAND;
-    OnlineTraining XNAND2;
-    OnlineTraining XNOR;
-    OnlineTraining XNOR2;
-    OnlineTraining XNADD;
+    GradientTraining XNAND;
+    GradientTraining XNAND2;
+    GradientTraining XNOR;
+    GradientTraining XNOR2;
+    GradientTraining XNADD;
 
 private Q_SLOTS:
     void AND();
@@ -32,7 +32,7 @@ XNeuronTestTest::XNeuronTestTest()
 
 }
 
-void XNeuronTestTest::Check(QList<bool> o, QList<QList<bool>> i, OnlineTraining XN)
+void XNeuronTestTest::Check(QList<bool> o, QList<QList<bool>> i, XNeuron XN)
 {
     for (QList<bool>& elem : i)
     {
@@ -53,7 +53,7 @@ void XNeuronTestTest::Check(QList<bool> o, QList<QList<bool>> i, OnlineTraining 
     }
 }
 
-void XNeuronTestTest::Check(QList<double> o, QList<QList<double>> i, OnlineTraining XN)
+void XNeuronTestTest::Check(QList<double> o, QList<QList<double>> i, XNeuron XN)
 {
     for (QList<double>& elem : i)
     {

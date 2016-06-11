@@ -47,7 +47,6 @@ protected:
     double mBias = 0;
     ActivityFunction::ActFunction mFunc;
 	QList<double> mWeight;
-
 };
 Q_DECLARE_INTERFACE(XNeuron, "Xma1.XNeuron/1.0")
 #endif // XNEURON_H
