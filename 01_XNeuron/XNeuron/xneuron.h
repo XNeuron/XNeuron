@@ -41,7 +41,7 @@ public:
 
     virtual void CalcOutput();
 
-private:
+protected:
     QList<double> mInput;
     double mOutput = 0;
     double mBias = 0;
