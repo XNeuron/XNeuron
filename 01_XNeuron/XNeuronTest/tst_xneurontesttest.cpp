@@ -214,7 +214,6 @@ void XNeuronTestTest::OR2()
 
 void XNeuronTestTest::ADD()
 {
-
     QList<QList<double>> i;
     QList<double> o;
     XNADD.setWeight(0, 1, 1, 1);
