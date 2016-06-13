@@ -44,7 +44,7 @@ bool GradientTraining::train(QList<QList<double>> &xInput, QList<double> &xOutpu
 			int tIndexOfInput = xInput.indexOf(x);
 
 			double mDelta = xOutputRequired[tIndexOfInput] - mOutput;
-			if (abs(mDelta) > 10 || isnan(mDelta) || isinf(mDelta))
+            if (abs(mDelta) > 10 || std::isnan(mDelta) || std::isinf(mDelta))
 			{
 				mBias = 0;
 				for (int i = 0; i < mWeight.length(); i++)
@@ -58,7 +58,7 @@ bool GradientTraining::train(QList<QList<double>> &xInput, QList<double> &xOutpu
 
 				double tMax;
 				tMax = abs(mInput[0]);
-				for each (double var in mInput)
+                for(double var : mInput)
 				{
 					if (tMax < abs(var))
 						tMax = abs(var);
