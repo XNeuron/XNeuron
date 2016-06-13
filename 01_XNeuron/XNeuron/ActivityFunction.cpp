@@ -1,5 +1,5 @@
 #include "ActivityFunction.h"
-
+int ActivityFunction::mRound=-1;
 ActivityFunction::ActivityFunction(QObject *parent)
     : QObject(parent)
 {
@@ -18,7 +18,7 @@ double ActivityFunction::giveActivityFunction(ActFunction func, double out, doub
     case ActivityFunction::Binary:
         return BinaryFunc(out, bias);
     case ActivityFunction::Line:
-        return LineFunc(out, bias,round);
+        return LineFunc(out, bias,mRound);
     case ActivityFunction::Line2:
         break;
     case ActivityFunction::logistic:

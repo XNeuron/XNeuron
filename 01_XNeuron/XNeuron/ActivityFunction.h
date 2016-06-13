@@ -18,7 +18,7 @@ public:
     static double BinaryFunc(double out, double bias);
     static double LineFunc(double out, double bias, int round);
 private:
-    int round=-1;
+    static int mRound;
 
 };
 
