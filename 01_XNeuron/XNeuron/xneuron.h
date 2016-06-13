@@ -27,10 +27,10 @@ public:
     virtual void setInput(const QList<double> &input);
 
     virtual void initWeight(const QList<bool> &input);
-    virtual void ClearWeight(const QList<bool> &input);
+    virtual void ResetWeight(const QList<bool> &input);
 
     virtual void initWeight(const QList<double> &input);
-    virtual void ClearWeight(const QList<double> &input);
+    virtual void ResetWeight(const QList<double> &input);
 
     virtual QList<double> weight() const;
     virtual void setWeight(double A, double B);
@@ -41,6 +41,7 @@ public:
 
     virtual void CalcOutput();
 
+    void setWeight(double A, double B, double C, double D);
 protected:
     QList<double> mInput;
     double mOutput = 0;

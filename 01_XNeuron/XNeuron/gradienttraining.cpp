@@ -44,29 +44,29 @@ bool GradientTraining::train(QList<QList<double>> &xInput, QList<double> &xOutpu
 			int tIndexOfInput = xInput.indexOf(x);
 
 			double mDelta = xOutputRequired[tIndexOfInput] - mOutput;
-			if (abs(mDelta) > 10 || isnan(mDelta) || isinf(mDelta))
+            if (/*abs(mDelta) > 10 || */std::isnan(mDelta) || std::isinf(mDelta))
 			{
-				mBias = 0;
+                //mBias = 0;
 				for (int i = 0; i < mWeight.length(); i++)
 				{
-					mWeight[i] = mWeight[i] / 2;
+                    mWeight[i] = ((double)(qrand()%10000))/1000;
 				}
 			}
 			else  if (mDelta != 0)
 			{
-				mBias = mBias - N*mDelta;
+                //mBias = mBias - N*mDelta;
 
-				double tMax;
-				tMax = abs(mInput[0]);
-				for each (double var in mInput)
-				{
-					if (tMax < abs(var))
-						tMax = abs(var);
-				}
+//				double tMax;
+//				tMax = abs(mInput[0]);
+//                for(double var : mInput)
+//				{
+//					if (tMax < abs(var))
+//						tMax = abs(var);
+//				}
 
 				for (int i = 0; i < mWeight.length(); i++)
 				{
-					mWeight[i] = mWeight[i] + mDelta*mInput[i] / tMax;
+                    mWeight[i] = mWeight[i] + N*mDelta*mInput[i];
 				}
 			}
 			else
@@ -81,3 +81,21 @@ bool GradientTraining::train(QList<QList<double>> &xInput, QList<double> &xOutpu
 	return false;
 }
 
+void GradientTraining::setInput(const QList<double> &input)
+{
+    mInput = input;
+    mInput.insert(0,1);
+    ResetWeight(mInput);
+    CalcOutput();
+}
+
+
+void GradientTraining::setInput(const QList<bool> &input)
+{
+    QList<double> tInput;
+    for (bool elem : input)
+    {
+        tInput << (elem ? 1.0 : -1.0);
+    }
+    setInput(tInput);
+}
