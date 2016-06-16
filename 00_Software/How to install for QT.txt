@@ -1,0 +1,6 @@
+Load source code of Opencv (2.4.11) http://sourceforge.net/projects/opencvlibrary/files/latest/download
+Load http://www.cmake.org/files/v3.2/cmake-3.2.1-win32-x86.exe
+
+build that sourchcode with cmake for your compiller (in QT for MinGW)
+
+http://hryu.livejournal.com/151430.html (how to install in qt "in russian")
