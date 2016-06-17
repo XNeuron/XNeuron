@@ -1,10 +1,27 @@
-#include <QCoreApplication>
-#include <QDebug>
+#include <opencv2/videoio.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc.hpp>
 
-int main(int argc, char *argv[])
+using namespace cv;
+
+int main(int, char**)
 {
-    QCoreApplication a(argc, argv);
+    VideoCapture cap(0); // open the default camera
+    if(!cap.isOpened())  // check if we succeeded
+        return -1;
 
-qDebug() << "sdfa";
-    return a.exec();
+    Mat edges;
+    namedWindow("edges",1);
+    for(;;)
+    {
+        Mat frame;
+        cap >> frame; // get a new frame from camera
+        cvtColor(frame, edges, CV_BGR2GRAY);
+        GaussianBlur(edges, edges, Size(7,7), 1.5, 1.5);
+        Canny(edges, edges, 0, 20, 3);
+        imshow("edges", edges);
+        if(waitKey(30) >= 0) break;
+    }
+    // the camera will be deinitialized automatically in VideoCapture destructor
+    return 0;
 }

@@ -1,4 +1,3 @@
-#include <QCoreApplication>
 #include <QDebug>
 #include <iostream>
 #include <string>

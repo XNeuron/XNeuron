@@ -11,7 +11,6 @@ TEMPLATE = app
 
 SOURCES += main.cpp
 
-
 install_it.path = $$OUT_PWD
 install_it.files = CopyData/*
 
