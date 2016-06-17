@@ -8,12 +8,33 @@ CONFIG += console
 CONFIG -= app_bundle
 
 TEMPLATE = app
-PKGCONFIG += opencv
 
 SOURCES += main.cpp
 
-INCLUDEPATH += C:/opencv-2.4.13/opencv/build/include
-LIBS += "C:/opencv-2.4.13/opencv/build/x86/vc12/bin/"
+install_it.path = $$OUT_PWD
+install_it.files = CopyData/*
+
+INSTALLS += install_it
+
+INCLUDEPATH += "C:/opencv310/opencv/install/include"
+LIBS += -L"C:/opencv310/opencv/install/x86/mingw/lib" \
+        #-llibopencv_calib3d310      \
+        -llibopencv_core310         \
+        #-llibopencv_features2d310   \
+        #-llibopencv_flann310        \
+        -llibopencv_highgui310      \
+        -llibopencv_imgcodecs310    \
+        -llibopencv_imgproc310      \
+        #-llibopencv_ml310           \
+        #-llibopencv_objdetect310    \
+        #-llibopencv_photo310        \
+        #-llibopencv_shape310        \
+        #-llibopencv_stitching310    \
+        #-llibopencv_superres310     \
+        #-llibopencv_ts310           \
+        #-llibopencv_videostab310    \
+        #-llibopencv_video310        \
+        #-llibopencv_videostab310
 
 #unix {
 #INCLUDEPATH +=
@@ -29,3 +50,9 @@ LIBS += "C:/opencv-2.4.13/opencv/build/x86/vc12/bin/"
 #INCLUDEPATH += ".\OpenCVWin64\include"
 #LIBS += -L".\OpenCVWin64\bin\*.dll"
 #}
+
+DISTFILES += \
+    Wall.E.png \
+    libopencv_highgui310.dll \
+    libopencv_imgcodecs310.dll \
+    libopencv_imgproc310.dll

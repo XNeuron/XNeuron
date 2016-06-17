@@ -1,6 +1,35 @@
 Load source code of Opencv (2.4.11) http://sourceforge.net/projects/opencvlibrary/files/latest/download
 Load http://www.cmake.org/files/v3.2/cmake-3.2.1-win32-x86.exe
 
+http://pavelk.ru/kompilyaciya-opencv-2-4-6-v-windows-dlya-qt-5-1 Is better
 build that sourchcode with cmake for your compiller (in QT for MinGW)
 
 http://hryu.livejournal.com/151430.html (how to install in qt "in russian")
+
+ERRORS:
+c:\qt\tools\mingw\bin\../lib/gcc/i686-w64-mingw32/4.7.2/../../../../i686-w64-mingw32/include/strsafe.h: At global scope:
+c:\qt\tools\mingw\bin\../lib/gcc/i686-w64-mingw32/4.7.2/../../../../i686-w64-mingw32/include/strsafe.h:503:12: warning: inline function 'HRESULT StringCbVPrintfA(STRSAFE_LPSTR, size_t, STRSAFE_LPCS
+ defined [enabled by default]
+modules\videoio\CMakeFiles\opencv_videoio.dir\build.make:187: recipe for target 'modules/videoio/CMakeFiles/opencv_videoio.dir/src/cap_dshow.cpp.obj' failed
+mingw32-make[2]: *** [modules/videoio/CMakeFiles/opencv_videoio.dir/src/cap_dshow.cpp.obj] Error 1
+CMakeFiles\Makefile2:4260: recipe for target 'modules/videoio/CMakeFiles/opencv_videoio.dir/all' failed
+mingw32-make[1]: *** [modules/videoio/CMakeFiles/opencv_videoio.dir/all] Error 2
+Makefile:159: recipe for target 'all' failed
+mingw32-make: *** [all] Error 2
+PS C:\opencv-3.1.0\opencv\buildMinGW>
+
+Solution:
+
+Go in the repository where opencv sources are located.
+
+For me it was "C:/opencv/sources/".
+
+Go to the "Cmake/" folder and search for the file named "OpenCVCompilerOptions.cmake"
+
+You just comment the line :
+
+add_extra_compiler_option(-Werror=non-virtual-dtor)
+So it should become
+
+#add_extra_compiler_option(-Werror=non-virtual-dtor)
+Now, you're good to configure and generate the makefile with cmake, the mingw32-make command line should work fine.
