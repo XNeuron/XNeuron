@@ -11,13 +11,14 @@ TEMPLATE = app
 
 SOURCES += main.cpp
 
+
 install_it.path = $$OUT_PWD
 install_it.files = CopyData/*
 
 INSTALLS += install_it
 
-INCLUDEPATH += "C:/opencv310/opencv/install/include"
-LIBS += -L"C:/opencv310/opencv/install/x86/mingw/lib" \
+INCLUDEPATH += "$$PWD/opencv/include"
+LIBS += -L"$$PWD/opencv/x86/mingw/lib" \
         #-llibopencv_calib3d310      \
         -llibopencv_core310         \
         #-llibopencv_features2d310   \
@@ -35,6 +36,7 @@ LIBS += -L"C:/opencv310/opencv/install/x86/mingw/lib" \
         #-llibopencv_videostab310    \
         #-llibopencv_video310        \
         #-llibopencv_videostab310
+
 
 #unix {
 #INCLUDEPATH +=
