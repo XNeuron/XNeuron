@@ -16,8 +16,9 @@ install_it.files = CopyData/*
 
 INSTALLS += install_it
 
-INCLUDEPATH += "$$PWD/opencv/include"
-LIBS += -L"$$PWD/opencv/x86/mingw/lib" \
+win32 {
+INCLUDEPATH += "$$PWD/../../OpenCVData/include"
+LIBS += -L"$$PWD/../../OpenCVData/x86/mingw/lib" \
        # -llibopencv_calib3d310      \
         -llibopencv_core310         \
        # -llibopencv_features2d310   \
@@ -36,3 +37,4 @@ LIBS += -L"$$PWD/opencv/x86/mingw/lib" \
        # -llibopencv_video310        \
        # -llibopencv_videostab310    \
         -llibopencv_videoio310
+}
