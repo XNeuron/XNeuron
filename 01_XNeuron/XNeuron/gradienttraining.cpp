@@ -75,6 +75,11 @@ bool GradientTraining::train(QList<QList<double>> &xInput, QList<double> &xOutpu
     return false;
 }
 
+void GradientTraining::setInput(bool A, bool B)
+{
+    setInput(QList<bool>() << A << B);
+}
+
 void GradientTraining::setInput(const QList<double> &input)
 {
     mInput = input;
