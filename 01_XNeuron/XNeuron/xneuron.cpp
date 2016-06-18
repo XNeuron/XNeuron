@@ -73,7 +73,7 @@ void XNeuron::setInput(bool A, bool B)
 void XNeuron::setInput(const QList<bool> &input)
 {
     QList<double> tInput;
-    ClearWeight(input);
+    ResetWeight(input);
     for (bool elem : input)
     {
         initWeight(input);
@@ -87,15 +87,17 @@ void XNeuron::initWeight(const QList<double> &input)
     qsrand(QTime::currentTime().msec());
     if (mWeight.length() != input.length())
     {
-        mWeight.append(qrand());
+        for(int i = 0;i<input.length();i++)
+            mWeight.append(qrand());
     }
 }
 
-void XNeuron::ClearWeight(const QList<double> &input)
+void XNeuron::ResetWeight(const QList<double> &input)
 {
     if (mWeight.length() != input.length())
     {
         mWeight.clear();
+        initWeight(input);
     }
 }
 
@@ -108,7 +110,7 @@ void XNeuron::initWeight(const QList<bool> &input)
     }
 }
 
-void XNeuron::ClearWeight(const QList<bool> &input)
+void XNeuron::ResetWeight(const QList<bool> &input)
 {
     if (mWeight.length() != input.length())
     {
@@ -129,6 +131,11 @@ void XNeuron::setWeight(double A, double B)
 void XNeuron::setWeight(double A, double B, double C)
 {
     mWeight = QList<double>() << A << B << C;
+}
+
+void XNeuron::setWeight(double A, double B, double C, double D)
+{
+    mWeight = QList<double>() << A << B << C << D;
 }
 
 void XNeuron::setWeight(const QList<double> &weight)
@@ -154,6 +161,6 @@ void XNeuron::CalcOutput()
 void XNeuron::setInput(const QList<double> &input)
 {
     mInput = input;
-    ClearWeight(input);
+    ResetWeight(input);
     CalcOutput();
 }

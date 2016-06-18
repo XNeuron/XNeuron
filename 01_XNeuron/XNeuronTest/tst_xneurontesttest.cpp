@@ -2,6 +2,7 @@
 #include <QtTest>
 #include <../XNeuron/gradienttraining.h>
 
+
 class XNeuronTestTest : public QObject
 {
 	Q_OBJECT
@@ -9,8 +10,10 @@ class XNeuronTestTest : public QObject
 public:
 	XNeuronTestTest();
 
-	void Check(QList<bool> o, QList<QList<bool>> i, XNeuron XN);
-	void Check(QList<double> o, QList<QList<double>> i, XNeuron XN);
+    void Check(QList<bool> o, QList<QList<bool>> i, XNeuron XN);
+    void Check(QList<double> o, QList<QList<double>> i, XNeuron XN);
+    void Check(QList<bool> o, QList<QList<bool>> i, GradientTraining XN);
+    void Check(QList<double> o, QList<QList<double>> i, GradientTraining XN);
 
 private:
 	GradientTraining XNAND;
@@ -74,6 +77,48 @@ void XNeuronTestTest::Check(QList<double> o, QList<QList<double>> i, XNeuron XN)
 		str2.append(QString().number(o[index]));
 		QVERIFY2(XN.output() == o[index], str2.join("=").toStdString().c_str());
 	}
+}
+
+void XNeuronTestTest::Check(QList<bool> o, QList<QList<bool>> i, GradientTraining XN)
+{
+    for (QList<bool>& elem : i)
+    {
+        XN.setInput(elem);
+        int index = i.indexOf(elem);
+        QStringList str;
+        for (bool& e : elem)
+        {
+            str.append(e?"1":"0");
+        }
+        QStringList str2;
+        str2.append(str.join("x"));
+        str2.append(QString().number(XN.output()));
+        str2.append(QString().number(XN.bias()));
+        str2.append(XN.outputBinary()?"1":"0");
+        str2.append(o[index]?"1":"0");
+        QVERIFY2(XN.outputBinary() == o[index],str2.join("=").toStdString().c_str());
+    }
+}
+
+void XNeuronTestTest::Check(QList<double> o, QList<QList<double>> i, GradientTraining XN)
+{
+    for (QList<double>& elem : i)
+    {
+        XN.setInput(elem);
+        int index = i.indexOf(elem);
+        QStringList str;
+        for (double& e : elem)
+        {
+            str.append(QString().number(e));
+        }
+        QStringList str2;
+        str2.append(str.join("x"));
+        str2.append(QString().number(XN.output()));
+        str2.append(QString().number(XN.bias()));
+        str2.append(QString().number(XN.output()));
+        str2.append(QString().number(o[index]));
+        QVERIFY2(XN.output() == o[index],str2.join("=").toStdString().c_str());
+    }
 }
 
 void XNeuronTestTest::AND()
@@ -226,9 +271,9 @@ void XNeuronTestTest::OR2()
 
 void XNeuronTestTest::ADD()
 {
-	QList<QList<double>> i;
-	QList<double> o;
-	XNADD.setWeight(1, 1, 1);
+    QList<QList<double>> i;
+    QList<double> o;
+    XNADD.setWeight(0, 1, 1, 1);
 
 	i.append(QList<double>() << 1.0 << 1.5 << 2.0);
 	i.append(QList<double>() << 3.5 << 2.8 << 3.25);

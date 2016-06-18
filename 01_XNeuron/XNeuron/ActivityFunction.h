@@ -16,8 +16,9 @@ public:
     static double giveActivityFunction(ActFunction func, double out, double bias);
 
     static double BinaryFunc(double out, double bias);
-    static double LineFunc(double out, double bias);
+    static double LineFunc(double out, double bias, int round);
 private:
+    static int mRound;
 
 };
 
