@@ -63,21 +63,25 @@ bool GradientTraining2::train(QList<QList<double>> &xInput, QList<double> &xOutp
             qDebug() << "Output: " << mOutput << "\n";
             int tIndexOfInput = xInput.indexOf(x);
             mDelta = xOutputRequired[tIndexOfInput] - mOutput;
-            qDebug() << "Output: " << mDelta << "\n";
+            qDebug() << "Delta: " << mDelta << "\n";
 
             if(qAbs(mDelta)>qAbs(tDelta))
             {
                 mDelta = tDelta;
                 mOutput = tOutput;
                 mWeight = tWeight;
-                N=N-0.01;
+                N=N-n;
+
                 if(N<=0)
                 {
+                    qDebug() << "Set N to 0.\n";
                     N=CalcN(N);
                     n*=0.1;
                     if(n<=0)
                         n=0.1;
                 }
+                qDebug() << "N: " << N << "\n";
+                qDebug() << "n: " << n << "\n";
             }
             else
             {
