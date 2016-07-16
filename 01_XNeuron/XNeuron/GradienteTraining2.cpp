@@ -1,12 +1,12 @@
-#include "gradienttraining.h"
+#include "GradienteTraining2.h"
 
-GradientTraining::GradientTraining()
+GradientTraining2::GradientTraining2()
 {
 
 }
 
 
-bool GradientTraining::train(QList<QList<bool>> &xInput, QList<bool> &xOutputRequired)
+bool GradientTraining2::train(QList<QList<bool>> &xInput, QList<bool> &xOutputRequired)
 {
     QList<QList<double>> mInput;
     QList<double> mOutputRequired;
@@ -24,7 +24,16 @@ bool GradientTraining::train(QList<QList<bool>> &xInput, QList<bool> &xOutputReq
     return train(mInput, mOutputRequired, ActivityFunction::Binary);
 }
 
-bool GradientTraining::train(QList<QList<double>> &xInput, QList<double> &xOutputRequired, ActivityFunction::ActFunction xFunc)
+double GradientTraining2::CalcN(double N)
+{
+    do
+    {
+        N = qAbs(((double)((qrand()) % 1000)) / (1000));
+    } while (N == 0);
+    return N;
+}
+
+bool GradientTraining2::train(QList<QList<double>> &xInput, QList<double> &xOutputRequired, ActivityFunction::ActFunction xFunc)
 {
     mFunc = xFunc;
     qsrand(QTime::currentTime().msec());
@@ -32,25 +41,55 @@ bool GradientTraining::train(QList<QList<double>> &xInput, QList<double> &xOutpu
     double N = 1;
     double mDelta=10000;
     double tDelta=10000;
+    int i=0;
+    auto tWeight = mWeight;
+    auto tOutput = mOutput;
+    double n=0.1;
+
     for (int var = 0; true; var++)
     {
-        do
-        {
-            N = ((double)((qrand()) % 1000)) / (1000);
-        } while (N == 0);
+
+        if(var==0)
+            CalcN(N);
 
         double error = xInput.size() + check;
         qDebug() << "N: " << N << "\n";
-        for (QList<double>& x : xInput)
+        for(QList<double>& x : xInput)
         {
             tDelta = mDelta;
+            tOutput = mOutput;
+            tWeight = mWeight;
             setInput(x);
             qDebug() << "Output: " << mOutput << "\n";
             int tIndexOfInput = xInput.indexOf(x);
             mDelta = xOutputRequired[tIndexOfInput] - mOutput;
             qDebug() << "Output: " << mDelta << "\n";
 
-            if (/*abs(mDelta) > 10 || */std::isnan(mDelta) || std::isinf(mDelta))
+            if(qAbs(mDelta)>qAbs(tDelta))
+            {
+                mDelta = tDelta;
+                mOutput = tOutput;
+                mWeight = tWeight;
+                N=N-0.01;
+                if(N<=0)
+                {
+                    N=CalcN(N);
+                    n*=0.1;
+                    if(n<=0)
+                        n=0.1;
+                }
+            }
+            else
+            {
+                if(var != 0)
+                {
+                    i++;
+                    if(i>=tWeight.length())
+                        i=0;
+                }
+            }
+
+            if (std::isnan(mDelta) || std::isinf(mDelta))
             {
                 //mBias = 0;
                 for (int i = 0; i < mWeight.length(); i++)
@@ -61,7 +100,7 @@ bool GradientTraining::train(QList<QList<double>> &xInput, QList<double> &xOutpu
             }
             else  if (mDelta != 0)
             {
-                for (int i = 0; i < mWeight.length(); i++)
+                //for (int i = 0; i < mWeight.length(); i++)
                 {
                     qDebug() << "Weight[" << i << "]: " << mWeight[i] << "\n";
                     mWeight[i] = mWeight[i] + N*mDelta*mInput[i];
@@ -79,7 +118,7 @@ bool GradientTraining::train(QList<QList<double>> &xInput, QList<double> &xOutpu
     return false;
 }
 
-void GradientTraining::setInput(const QList<double> &input)
+void GradientTraining2::setInput(const QList<double> &input)
 {
     mInput = input;
     mInput.insert(0,1);
@@ -88,7 +127,7 @@ void GradientTraining::setInput(const QList<double> &input)
 }
 
 
-void GradientTraining::setInput(const QList<bool> &input)
+void GradientTraining2::setInput(const QList<bool> &input)
 {
     QList<double> tInput;
     for (bool elem : input)

@@ -1,12 +1,12 @@
 #include <QCoreApplication>
-#include "../XNeuron/gradienttraining.h"
+#include "../XNeuron/GradienteTraining2.h"
 #include "QDateTime"
 #include <QDebug>
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    GradientTraining XNADD;
+    GradientTraining2 XNADD;
 
     QList<QList<double>> i;
     QList<double> o;

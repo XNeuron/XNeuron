@@ -13,10 +13,12 @@ SOURCES += main.cpp \
     ../XNeuron/ActivityFunction.cpp \
     ../XNeuron/gradienttraining.cpp \
     ../XNeuron/OnlineTraining.cpp \
-    ../XNeuron/xneuron.cpp
+    ../XNeuron/xneuron.cpp \
+    ../XNeuron/GradienteTraining2.cpp
 
 HEADERS += \
     ../XNeuron/ActivityFunction.h \
     ../XNeuron/gradienttraining.h \
     ../XNeuron/OnlineTraining.h \
-    ../XNeuron/xneuron.h
+    ../XNeuron/xneuron.h \
+    ../XNeuron/GradienteTraining2.h
