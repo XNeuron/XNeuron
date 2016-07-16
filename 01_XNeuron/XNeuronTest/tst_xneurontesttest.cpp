@@ -214,7 +214,6 @@ void XNeuronTestTest::OR2()
 
 void XNeuronTestTest::ADD()
 {
-
     QList<QList<double>> i;
     QList<double> o;
     XNADD.setWeight(0, 1, 1, 1);
@@ -226,7 +225,7 @@ void XNeuronTestTest::ADD()
     o.append(3.5 + 2.8 + 3.25);
     o.append(15.25 + 14 + 100);
 
-    XNADD.train(i, o, ActivityFunction::Line);
+    XNADD.train(i, o, ActivityFunction::Line3);
     Check(o, i, XNADD);
 }
 
