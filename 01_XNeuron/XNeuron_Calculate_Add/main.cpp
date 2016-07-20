@@ -19,6 +19,17 @@ int main(int argc, char *argv[])
     o.append(3.5 + 2.8 + 3.25);
     o.append(15.25 + 14 + 100);
 
+    int index=0;
+    while(index<200)
+    {
+        double x = ((double)((qrand() / 100) % 200)-100);
+        double y = ((double)((qrand() / 100) % 200)-100);
+        double z = ((double)((qrand() / 100) % 200)-100);
+        i.append(QList<double>() << x << y << z);
+        o.append(x + y + z);
+        index++;
+    }
+
     QDateTime start = QDateTime::currentDateTime();
     qDebug() << "start time: " << start << "\n";
     XNADD.train(i, o, ActivityFunction::Line);
