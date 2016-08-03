@@ -27,7 +27,6 @@ int main(int, char**)
         if(QFileInfo(Name).exists())
         {
             Mat temp=imread(Name.toStdString());
-            pyrDown( temp, temp );
             tInput.append(temp);
             Name=QDir().currentPath()+"/Input/"+QString::number(file++)+".jpg";
         }
