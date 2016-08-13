@@ -156,7 +156,7 @@ int main(int, char**)
         index++;
     }
 
-    vector<int> layerSizes = { inputLayerSize, 10, 10, outputLayerSize };
+    vector<int> layerSizes = { inputLayerSize, 100, 100, 100, outputLayerSize };
     Ptr<ml::ANN_MLP> nnPtr;
     if(QFileInfo("Color.yml").exists())
     {
@@ -172,9 +172,12 @@ int main(int, char**)
         nnPtr->setTrainMethod(ml::ANN_MLP::BACKPROP);
 
         TermCriteria tc;
-        tc.epsilon=0.01;
-        tc.maxCount=10000;
+        tc.epsilon=0.001;
+        tc.maxCount=100000;
         tc.type = TermCriteria::MAX_ITER + TermCriteria::EPS;
+
+        nnPtr->setTermCriteria(tc);
+
 
         cout << "begin training:\n" << endl;
         if ( !nnPtr->train( samples, ml::ROW_SAMPLE, responses ) )
@@ -191,22 +194,24 @@ int main(int, char**)
     nnPtr->predict( samples, output );
 
     cout << "Saving\n" << endl;
-    for( int r=0; r < samples.rows;r++)
+    QString Name=QDir().currentPath()+"/Output/"+"Out"+".txt";
+    QFile filewrite(Name);
+    if(filewrite.open(QFile::WriteOnly|QFile::Text))
     {
-        index=0;
-        //Mat image2( Size( w, h ), CV_32FC3);
-        auto Out1=responses.ptr<float>(r);
-        //auto im1=image2.ptr<float>(0);
-        QStringList outStr;
-        for( int c=0; c < output.cols;c++)
+        for( int r=0; r < samples.rows;r++)
         {
-            outStr.append(QString::number(Out1[c]));
-            index++;
-        }
-        QString Name=QDir().currentPath()+"/Output/"+"Out"+".txt";
-        QFile filewrite(Name);
-        if(filewrite.open(QFile::WriteOnly|QFile::Text))
-        {
+            index=0;
+            //Mat image2( Size( w, h ), CV_32FC3);
+            auto Out1=output.ptr<float>(r);
+            auto Out2=responses.ptr<float>(r);
+            //auto im1=image2.ptr<float>(0);
+            QStringList outStr;
+            for( int c=0; c < output.cols;c++)
+            {
+                outStr.append(QString::number(Out1[c]-Out2[c]));
+                index++;
+            }
+
             QTextStream s(&filewrite);
             s << outStr.join(" ");
             s << "\n";
