@@ -49,25 +49,18 @@ namespace ANN1
             trainClasses2.SetValue(2);
             #endregion
 
-            using (Matrix<int> layerSize = new Matrix<int>(new int[] { 2, 5, 1 }))
+            using (Matrix<int> layerSize = new Matrix<int>(new int[] { 2,10 ,2 }))
             using (Mat layerSizeMat = layerSize.Mat)
 
             using (TrainData td = new TrainData(trainData, Emgu.CV.ML.MlEnum.DataLayoutType.RowSample, trainClasses))
             using (ANN_MLP network = new ANN_MLP())
             {
                 network.SetLayerSizes(layerSizeMat);
-                network.SetActivationFunction(ANN_MLP.AnnMlpActivationFunction.SigmoidSym, 0, 0);
-                network.TermCriteria = new MCvTermCriteria(10, 1.0e-8);
+                network.SetActivationFunction(ANN_MLP.AnnMlpActivationFunction.SigmoidSym);
+                network.TermCriteria = new MCvTermCriteria(10000, 1.0e-8);
                 network.SetTrainMethod(ANN_MLP.AnnMlpTrainMethod.Backprop, 0.1, 0.1);
-                network.Train(td, (int)Emgu.CV.ML.MlEnum.AnnMlpTrainingFlag.Default);
-
-#if !NETFX_CORE
-                String fileName = "ann_mlp_model.xml";
-                network.Save(fileName);
-                if (File.Exists(fileName))
-                    File.Delete(fileName);
-#endif
-
+                network.Train(td);
+                network.Save("temp.txt");
                 for (int i = 0; i < img.Height; i++)
                 {
                     for (int j = 0; j < img.Width; j++)

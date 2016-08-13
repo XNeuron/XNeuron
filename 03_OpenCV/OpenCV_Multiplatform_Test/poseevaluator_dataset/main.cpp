@@ -10,6 +10,8 @@
 #include <QDir>
 #include <QDateTime>
 #include <QDebug>
+#include <QFile>
+#include <QMap>
 
 using namespace cv;
 using namespace std;
@@ -19,105 +21,142 @@ int main(int, char**)
 
     QDateTime start = QDateTime::currentDateTime();
     qDebug() << "start time: " << start << "\n";
-    QList<Mat> tInput;
-    int file=1;
-    QString Name=QDir().currentPath()+"/Input/"+QString::number(file++)+".jpg";
-    do
+    QMap<QString, Mat> tInput;
+    //int file=1;
+    //QString Name=QDir().currentPath()+"/Input/"+QString::number(file++)+".jpg";
+    QString InputListName = QDir().currentPath()+"/Input/"+ "images.list";
+
+    QFile file(InputListName);
+    if(file.open(QIODevice::ReadOnly))
     {
-        if(QFileInfo(Name).exists())
+        while(!file.atEnd())
         {
-            Mat temp=imread(Name.toStdString());
-            tInput.append(temp);
-            Name=QDir().currentPath()+"/Input/"+QString::number(file++)+".jpg";
+            QString tempInput= file.readLine().replace("\n","");
+            if(tempInput!="")
+            {
+                QString tPath = QDir().currentPath()+"/Input/"+ tempInput;
+                tPath = tPath.replace("/","\\");
+                Mat temp=imread(tPath.toStdString());
+                pyrDown(temp,temp);
+                tInput.insert(tempInput, temp);
+            }
         }
-    }while(QFileInfo(Name).exists());
+    }
+    InputListName = QDir().currentPath()+"/Responses/"+ "4weds_sticks_standard.txt";
+    QMap<QString,QList<double>> tResponses;
 
 
-
-    QList<Mat> tResponses;
-    file=1;
-    Name=QDir().currentPath()+"/Input/"+QString::number(file++)+".jpg";
-    do
+    int max=0;
+    QFile file2(InputListName);
+    if(file2.open(QIODevice::ReadOnly))
     {
-        Mat temp=imread(Name.toStdString());
-        pyrDown( temp, temp );
-        tResponses.append(temp);
-        Name=QDir().currentPath()+"/Responses/"+QString::number(file++)+".jpg";
-    }while(QFileInfo(Name).exists());
+        QList<double>* tTempResponses = new QList<double>();
+        QString tName="";
+        while(!file2.atEnd())
+        {
+            QString tempInput= file2.readLine();
+            if(tempInput.contains("jpg"))
+            {
+                if(tName!="")
+                {
+                    if(tName!="")
+                        tResponses.insert(tName,*tTempResponses);
+                    if(max<tTempResponses->count())
+                        max=tTempResponses->count();
+                }
+                tName=tempInput.replace(" \n","").split(' ')[0];
+                tTempResponses = new QList<double>();
+            }else
+            {
+                QStringList s = tempInput.replace("\n","").split(' ');
+                for(QString t: s)
+                {
+                    if(t!="")
+                    {
+                        double d = t.toDouble();
+                        tTempResponses->append(d);
+                    }
+                }
+
+            }
+        }
+    }
 
 
-    int max=tInput[0].rows*tInput[0].cols*3;
-    QList<QList<float>> tBWList;
-    QList<QList<float>> tColorList;
+    int Imax=tInput.first().rows*tInput.first().cols*3;
+    QList<QList<float>> tInputList;
+    QList<QList<double>> tResponsesList;
     int w,h;
-    h=tInput[0].rows;
-    w=tInput[0].cols*3;
+    h=tInput.first().rows;
+    w=tInput.first().cols*3;
 
-    for(int m=0;m<tInput.length();m++)
+    int count=0;
+    for(auto m: tResponses.keys())
     {
-        Mat tBW=tInput[m];
-
-        if(max>tBW.rows*tBW.cols*3)
-        {   h=tBW.rows;
-            w=tBW.cols;
-            max=tBW.rows*tBW.cols*3;
-        }
-        auto tPtr=tBW.ptr<uchar>(0);
-        QList<float> tBWRow;
-        for (int i = 0; i < tBW.rows; ++i)
+        try
         {
-            for (int j = 0; j < tBW.cols; ++j)
+            Mat tIn=tInput[m];
+
+            if(tIn.rows*tIn.cols*3==Imax)
             {
-                tBWRow.append((float)(*tPtr++)/255);
-                tBWRow.append((float)(*tPtr++)/255);
-                tBWRow.append((float)(*tPtr++)/255);
+                if(Imax>tIn.rows*tIn.cols*3)
+                {   h=tIn.rows;
+                    w=tIn.cols;
+                    Imax=tIn.rows*tIn.cols*3;
+                }
+                auto tPtr=tIn.ptr<uchar>(0);
+                QList<float> tBWRow;
+                for (int i = 0; i < tIn.rows; ++i)
+                {
+                    for (int j = 0; j < tIn.cols; ++j)
+                    {
+                        tBWRow.append((float)(*tPtr++)/255);
+                        tBWRow.append((float)(*tPtr++)/255);
+                        tBWRow.append((float)(*tPtr++)/255);
+                    }
+                }
+                tInputList.append(tBWRow);
+                tResponsesList.append(tResponses[m]);
+                tIn.release();
+                count++;
             }
+        }catch(Exception ex)
+        {
+
         }
-        tBWList.append(tBWRow);
+        if(count>100)
+            break;
     }
 
-    for(int m=0; m<tResponses.length();m++)
-    {
-        Mat tColor = tResponses[m];
-        if(max>tColor.rows*tColor.cols*3)
-        {
-            h=tColor.rows;
-            w=tColor.cols;
-            max=tColor.rows*tColor.cols*3;
-        }
-        auto tPtr=tColor.ptr<uchar>(0);
-        QList<float> tColorRow;
-        for (int i = 0; i < h; ++i)
-        {
-            for (int j = 0; j < w; ++j)
-            {
-                tColorRow.append((float)(*tPtr++)/255);
-                tColorRow.append((float)(*tPtr++)/255);
-                tColorRow.append((float)(*tPtr++)/255);
-            }
-        }
-        tColorList.append(tColorRow);
-    }
-
-    int inputLayerSize = max;
+    int inputLayerSize = Imax;
     int outputLayerSize = max;
-    int numSamples = tColorList.length();
+    int numSamples = tInputList.length();
 
     Mat samples( Size( inputLayerSize, numSamples ), CV_32F );
     Mat responses( Size( outputLayerSize, numSamples ), CV_32F );
 
     int index=0;
-    while(index < max)
+    while(index < numSamples)
     {
-        for(int s = 0; s < tColorList.length(); s++)
+        for(int s = 0; s < inputLayerSize; s++)
         {
-            samples.at<float>( Point( index, s ) ) = tBWList[s][index];
-            responses.at<float>( Point( index, s ) ) = tColorList[s][index];
+            if(s<tInputList[index].count())
+                samples.at<float>( Point( s, index ) ) = tInputList[index][s];
+            else
+                samples.at<float>( Point( s, index ) ) = 0;
         }
+        for(int s = 0; s < outputLayerSize; s++)
+        {
+            if(s<tResponsesList[index].count())
+                responses.at<float>( Point( s, index ) ) = tResponsesList[index][s];
+            else
+                responses.at<float>( Point( s, index ) ) = 0;
+        }
+
         index++;
     }
 
-    vector<int> layerSizes = { inputLayerSize, 50, inputLayerSize };
+    vector<int> layerSizes = { inputLayerSize, 10, 10, outputLayerSize };
     Ptr<ml::ANN_MLP> nnPtr;
     if(QFileInfo("Color.yml").exists())
     {
@@ -130,7 +169,7 @@ int main(int, char**)
 
         nnPtr->setLayerSizes( layerSizes );
         nnPtr->setActivationFunction( cv::ml::ANN_MLP::SIGMOID_SYM );
-        nnPtr->setTrainMethod(ml::ANN_MLP::BACKPROP,0.01,0.01);
+        nnPtr->setTrainMethod(ml::ANN_MLP::BACKPROP);
 
         TermCriteria tc;
         tc.epsilon=0.01;
@@ -152,20 +191,28 @@ int main(int, char**)
     nnPtr->predict( samples, output );
 
     cout << "Saving\n" << endl;
-    for( int r=0; r < output.rows;r++)
+    for( int r=0; r < samples.rows;r++)
     {
         index=0;
-        Mat image2( Size( w, h ), CV_32FC3);
-        auto Out1=output.ptr<float>(r);
-        auto im1=image2.ptr<float>(0);
+        //Mat image2( Size( w, h ), CV_32FC3);
+        auto Out1=responses.ptr<float>(r);
+        //auto im1=image2.ptr<float>(0);
+        QStringList outStr;
         for( int c=0; c < output.cols;c++)
         {
-            *im1=Out1[c];
-            im1++;
+            outStr.append(QString::number(Out1[c]));
             index++;
         }
-        Name=QDir().currentPath()+"/Output/"+QString::number(r)+".jpg";
-        imwrite( Name.toStdString(), image2 );
+        QString Name=QDir().currentPath()+"/Output/"+"Out"+".txt";
+        QFile filewrite(Name);
+        if(filewrite.open(QFile::WriteOnly|QFile::Text))
+        {
+            QTextStream s(&filewrite);
+            s << outStr.join(" ");
+            s << "\n";
+        }
+
+        //imwrite( Name.toStdString(), image2 );
     }
     cout << "Finished\n" << endl;
     QDateTime end = QDateTime::currentDateTime();
