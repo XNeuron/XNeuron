@@ -12,13 +12,14 @@
 #include <QDebug>
 #include <QFile>
 #include <QMap>
+#include <QApplication>
 
 using namespace cv;
 using namespace std;
 
-int main(int, char**)
+int main(int argc, char* argv[])
 {
-
+    QApplication a(argc,argv);
     QDateTime start = QDateTime::currentDateTime();
     qDebug() << "start time: " << start << "\n";
     QMap<QString, Mat> tInput;
@@ -156,7 +157,7 @@ int main(int, char**)
         index++;
     }
 
-    vector<int> layerSizes = { inputLayerSize, 100, 100, 100, outputLayerSize };
+    vector<int> layerSizes = { inputLayerSize, 10, 10, 10, outputLayerSize };
     Ptr<ml::ANN_MLP> nnPtr;
     if(QFileInfo("Color.yml").exists())
     {
@@ -169,11 +170,11 @@ int main(int, char**)
 
         nnPtr->setLayerSizes( layerSizes );
         nnPtr->setActivationFunction( cv::ml::ANN_MLP::SIGMOID_SYM );
-        nnPtr->setTrainMethod(ml::ANN_MLP::BACKPROP);
+        nnPtr->setTrainMethod(ml::ANN_MLP::BACKPROP,1000,1000);
 
         TermCriteria tc;
-        tc.epsilon=0.001;
-        tc.maxCount=100000;
+        tc.epsilon=0.01;
+        tc.maxCount=1000000;
         tc.type = TermCriteria::MAX_ITER + TermCriteria::EPS;
 
         nnPtr->setTermCriteria(tc);
@@ -196,6 +197,8 @@ int main(int, char**)
     cout << "Saving\n" << endl;
     QString Name=QDir().currentPath()+"/Output/"+"Out"+".txt";
     QFile filewrite(Name);
+    double tErrorDiff=0;
+    double tError=0;
     if(filewrite.open(QFile::WriteOnly|QFile::Text))
     {
         for( int r=0; r < samples.rows;r++)
@@ -208,7 +211,10 @@ int main(int, char**)
             QStringList outStr;
             for( int c=0; c < output.cols;c++)
             {
-                outStr.append(QString::number(Out1[c]-Out2[c]));
+                tErrorDiff+=abs(Out1[c]-Out2[c]);
+                if(Out2[c]!=0)
+                    tError*=Out1[c]/Out2[c];
+                outStr.append(QString::number(Out1[c]));
                 index++;
             }
 
@@ -219,9 +225,12 @@ int main(int, char**)
 
         //imwrite( Name.toStdString(), image2 );
     }
+    cout << "Error Diff: " << tErrorDiff << endl;
+    cout << "Error Factor: " << tError << endl;
+
     cout << "Finished\n" << endl;
     QDateTime end = QDateTime::currentDateTime();
     qDebug() << "end time: " << end << "\n";
     qDebug() << "diff time: " << start.msecsTo(end) << "\n";
-    return 0;
+    return a.exec();
 }
