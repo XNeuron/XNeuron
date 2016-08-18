@@ -17,15 +17,43 @@
 using namespace cv;
 using namespace std;
 
-int LoadResponses(QMap<QString,QList<float>> *tResponses, QString InputListName)
+int main(int argc, char* argv[])
 {
+    QApplication a(argc,argv);
+    QDateTime start = QDateTime::currentDateTime();
+    qDebug() << "start time: " << start << "\n";
+    QMap<QString, Mat> tInput;
+    //int file=1;
+    //QString Name=QDir().currentPath()+"/Input/"+QString::number(file++)+".jpg";
+    QString InputListName = QDir().currentPath()+"/Input/"+ "images.list";
+
+    QFile file(InputListName);
+    if(file.open(QIODevice::ReadOnly))
+    {
+        while(!file.atEnd())
+        {
+            QString tempInput= file.readLine().replace("\n","");
+            if(tempInput!="")
+            {
+                QString tPath = QDir().currentPath()+"/Input/"+ tempInput;
+                tPath = tPath.replace("/","\\");
+                Mat temp=imread(tPath.toStdString());
+                pyrDown(temp,temp);
+                cvtColor( temp, temp, CV_BGR2GRAY );
+                tInput.insert(tempInput, temp);
+            }
+        }
+    }
+    InputListName = QDir().currentPath()+"/Responses/"+ "4weds_sticks_standard.txt";
+    QMap<QString,QList<double>> tResponses;
+
+
     int max=0;
     QFile file2(InputListName);
     if(file2.open(QIODevice::ReadOnly))
     {
-        QList<float>* tTempResponses = new QList<float>();
+        QList<double>* tTempResponses = new QList<double>();
         QString tName="";
-        int tXY=0;
         while(!file2.atEnd())
         {
             QString tempInput= file2.readLine();
@@ -34,12 +62,12 @@ int LoadResponses(QMap<QString,QList<float>> *tResponses, QString InputListName)
                 if(tName!="")
                 {
                     if(tName!="")
-                        tResponses->insert(tName,*tTempResponses);
+                        tResponses.insert(tName,*tTempResponses);
                     if(max<tTempResponses->count())
                         max=tTempResponses->count();
                 }
                 tName=tempInput.replace(" \n","").split(' ')[0];
-                tTempResponses = new QList<float>();
+                tTempResponses = new QList<double>();
             }else
             {
                 QStringList s = tempInput.replace("\n","").split(' ');
@@ -56,54 +84,10 @@ int LoadResponses(QMap<QString,QList<float>> *tResponses, QString InputListName)
         }
     }
 
-    return max;
-}
-
-void LoadInputImages(QMap<QString, Mat> *tInput, QString InputListName)
-{
-    QFile file(InputListName);
-    if(file.open(QIODevice::ReadOnly))
-    {
-        while(!file.atEnd())
-        {
-            QString tempInput= file.readLine().replace("\n","");
-            if(tempInput!="")
-            {
-                QString tPath = QDir().currentPath()+"/Input/"+ tempInput;
-                tPath = tPath.replace("/","\\");
-                Mat temp=imread(tPath.toStdString());
-                cvtColor( temp, temp, CV_BGR2GRAY );
-                pyrDown(temp,temp);
-                pyrDown(temp,temp);
-                pyrDown(temp,temp);
-
-                tInput->insert(tempInput, temp);
-            }
-        }
-    }
-}
-
-int main(int argc, char* argv[])
-{
-    QApplication a(argc,argv);
-    QDateTime tEnd;
-    QDateTime start = QDateTime::currentDateTime();
-    qDebug() << "start time: " << start << "\n";
-    QMap<QString, Mat> tInput;
-    //int file=1;
-    //QString Name=QDir().currentPath()+"/Input/"+QString::number(file++)+".jpg";
-    QString InputListName = QDir().currentPath()+"/Input/"+ "images.list";
-    qDebug() << "Load Input Images";
-    LoadInputImages(&tInput, InputListName);
-    InputListName = QDir().currentPath()+"/Responses/"+ "Response.txt";
-    QMap<QString,QList<float>> tResponses;
-
-    qDebug() << "Load Responses";
-    int max = LoadResponses(&tResponses, InputListName);
 
     int Imax=tInput.first().rows*tInput.first().cols;
     QList<QList<float>> tInputList;
-    QList<QList<float>> tResponsesList;
+    QList<QList<double>> tResponsesList;
     int w,h;
     h=tInput.first().rows;
     w=tInput.first().cols;
@@ -128,7 +112,7 @@ int main(int argc, char* argv[])
                 {
                     for (int j = 0; j < tIn.cols; ++j)
                     {
-                        tBWRow.append((float)(*tPtr++));
+                        tBWRow.append((float)(*tPtr++)/255);
                     }
                 }
                 tInputList.append(tBWRow);
@@ -172,24 +156,24 @@ int main(int argc, char* argv[])
         index++;
     }
 
-    vector<int> layerSizes = { inputLayerSize, 10,  10, outputLayerSize };
+    vector<int> layerSizes = { inputLayerSize, 300, 300, outputLayerSize };
     Ptr<ml::ANN_MLP> nnPtr;
     if(QFileInfo("Color.yml").exists())
     {
         cout << "Loading\n" << endl;
         nnPtr=Algorithm::load<ml::ANN_MLP>("Color.yml");
     }
-    else
+    //else
     {
         nnPtr = ml::ANN_MLP::create();
 
         nnPtr->setLayerSizes( layerSizes );
-        nnPtr->setActivationFunction( cv::ml::ANN_MLP::SIGMOID_SYM, 1000 ,1000 );
-        nnPtr->setTrainMethod(ml::ANN_MLP::BACKPROP,0.1,0.1);
+        nnPtr->setActivationFunction( cv::ml::ANN_MLP::SIGMOID_SYM );
+        nnPtr->setTrainMethod(ml::ANN_MLP::BACKPROP,1000,1000);
 
         TermCriteria tc;
         tc.epsilon=0.01;
-        tc.maxCount=100000;
+        tc.maxCount=1000000;
         tc.type = TermCriteria::MAX_ITER + TermCriteria::EPS;
 
         nnPtr->setTermCriteria(tc);
@@ -199,10 +183,10 @@ int main(int argc, char* argv[])
         if ( !nnPtr->train( samples, ml::ROW_SAMPLE, responses ) )
             return 1;
         cout << "end training:\n" << endl;
-        //nnPtr->save("Color.yml");
-        tEnd = QDateTime::currentDateTime();
-        qDebug() << "end training: " << tEnd << "\n";
-        qDebug() << "diff time training: " << start.msecsTo(tEnd) << "\n";
+        nnPtr->save("Color.yml");
+        QDateTime end = QDateTime::currentDateTime();
+        qDebug() << "end training: " << end << "\n";
+        qDebug() << "diff time training: " << start.msecsTo(end) << "\n";
     }
 
     cout << "Predicting\n" << endl;
@@ -210,51 +194,10 @@ int main(int argc, char* argv[])
     nnPtr->predict( samples, output );
 
     cout << "Saving\n" << endl;
-
-    double tErrorDiff=0;
-    double tError=1;
-    int tDiff=1;
-
-    do
-    {
-        cout << "Calculate Error:\n" << endl;
-
-        tErrorDiff=0;
-        tError=1;
-        tDiff=1;
-        for( int r=0; r < samples.rows;r++)
-        {
-            auto Out1=output.ptr<float>(r);
-            auto Out2=responses.ptr<float>(r);
-            for( int c=0; c < output.cols;c++)
-            {
-                tErrorDiff+=abs(Out1[c]-Out2[c]);
-                if(Out2[c]!=0)
-                {
-                    tError*=Out2[c]/Out1[c];
-                }
-                tDiff++;
-            }
-        }
-
-        tErrorDiff=tErrorDiff/tDiff;
-
-        cout << "Error Diff: " << tErrorDiff << endl;
-        cout << "Error Factor: " << tError << endl;
-
-        tEnd = QDateTime::currentDateTime();
-        qDebug() << "loop end time: " << tEnd << "\n";
-        qDebug() << "loop diff time: " << start.msecsTo(tEnd) << "\n";
-
-        cout << "begin training:\n" << endl;
-        if ( !nnPtr->train( samples, ml::ROW_SAMPLE, responses ) )
-            return 1;
-        cout << "end training:\n" << endl;
-        //nnPtr->save("Color.yml");
-    }while(tErrorDiff>1);
-
     QString Name=QDir().currentPath()+"/Output/"+"Out"+".txt";
     QFile filewrite(Name);
+    double tErrorDiff=0;
+    double tError=0;
     if(filewrite.open(QFile::WriteOnly|QFile::Text))
     {
         for( int r=0; r < samples.rows;r++)
@@ -267,18 +210,26 @@ int main(int argc, char* argv[])
             QStringList outStr;
             for( int c=0; c < output.cols;c++)
             {
-                outStr.append(QString::number(Out2[c]));
+                tErrorDiff+=abs(Out1[c]-Out2[c]);
+                if(Out2[c]!=0)
+                    tError*=Out1[c]/Out2[c];
+                outStr.append(QString::number(Out1[c]));
+                index++;
             }
+
+            QTextStream s(&filewrite);
+            s << outStr.join(" ");
+            s << "\n";
         }
 
         //imwrite( Name.toStdString(), image2 );
     }
-    cout << "Error Diff: " << tErrorDiff/tDiff << endl;
+    cout << "Error Diff: " << tErrorDiff << endl;
     cout << "Error Factor: " << tError << endl;
 
     cout << "Finished\n" << endl;
-    tEnd = QDateTime::currentDateTime();
-    qDebug() << "end time: " << tEnd << "\n";
-    qDebug() << "diff time: " << start.msecsTo(tEnd) << "\n";
+    QDateTime end = QDateTime::currentDateTime();
+    qDebug() << "end time: " << end << "\n";
+    qDebug() << "diff time: " << start.msecsTo(end) << "\n";
     return a.exec();
 }
