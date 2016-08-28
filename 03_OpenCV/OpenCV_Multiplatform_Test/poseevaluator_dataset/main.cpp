@@ -48,7 +48,7 @@ int LoadResponses(QMap<QString,QList<float>> *tResponses, QString InputListName)
                     if(t!="")
                     {
                         double d = t.toDouble();
-                        tTempResponses->append(d);
+                        tTempResponses->append(d/720);
                     }
                 }
 
@@ -128,7 +128,7 @@ int main(int argc, char* argv[])
                 {
                     for (int j = 0; j < tIn.cols; ++j)
                     {
-                        tBWRow.append((float)(*tPtr++));
+                        tBWRow.append((float)(*tPtr++)/255);
                     }
                 }
                 tInputList.append(tBWRow);
@@ -140,7 +140,7 @@ int main(int argc, char* argv[])
         {
             qDebug()<< ex.msg.c_str();
         }
-        if(count>100)
+        if(count>1000)
             break;
     }
 
@@ -172,7 +172,7 @@ int main(int argc, char* argv[])
         index++;
     }
 
-    vector<int> layerSizes = { inputLayerSize, 10,  10, outputLayerSize };
+    vector<int> layerSizes = { inputLayerSize, 1000,  100,  100, outputLayerSize };
     Ptr<ml::ANN_MLP> nnPtr;
     if(QFileInfo("Color.yml").exists())
     {
@@ -184,11 +184,11 @@ int main(int argc, char* argv[])
         nnPtr = ml::ANN_MLP::create();
 
         nnPtr->setLayerSizes( layerSizes );
-        nnPtr->setActivationFunction( cv::ml::ANN_MLP::SIGMOID_SYM, 1000 ,1000 );
+        nnPtr->setActivationFunction( cv::ml::ANN_MLP::SIGMOID_SYM, 1 ,1 );
         nnPtr->setTrainMethod(ml::ANN_MLP::BACKPROP,0.1,0.1);
 
         TermCriteria tc;
-        tc.epsilon=0.01;
+        tc.epsilon=0.0001;
         tc.maxCount=100000;
         tc.type = TermCriteria::MAX_ITER + TermCriteria::EPS;
 
@@ -229,15 +229,16 @@ int main(int argc, char* argv[])
             for( int c=0; c < output.cols;c++)
             {
                 tErrorDiff+=abs(Out1[c]-Out2[c]);
-                if(Out2[c]!=0)
+                if(Out1[c]!=0&&Out2[c]!=0)
                 {
-                    tError*=Out2[c]/Out1[c];
+                    tError+=Out2[c]/Out1[c];
                 }
                 tDiff++;
             }
         }
 
         tErrorDiff=tErrorDiff/tDiff;
+        tError=tError/tDiff;
 
         cout << "Error Diff: " << tErrorDiff << endl;
         cout << "Error Factor: " << tError << endl;
@@ -267,7 +268,7 @@ int main(int argc, char* argv[])
             QStringList outStr;
             for( int c=0; c < output.cols;c++)
             {
-                outStr.append(QString::number(Out2[c]));
+                outStr.append(QString::number(Out2[c]*720));
             }
         }
 
