@@ -64,7 +64,7 @@ void SaveToImages2(QString xPath,int xLayerSize, int s, int w, int h, Mat xOutPu
     if(xLayerSize==2)
         image2=Mat::zeros(h,w,CV_32FC2);
     if(xLayerSize==3)
-        image2=Mat::zeros(h,w,CV_32FC3);
+        image2=Mat::ones(h,w,CV_32FC3);
     if(xLayerSize==4)
         image2=Mat::zeros(h,w,CV_32FC4);
     int x=0;
@@ -76,16 +76,18 @@ void SaveToImages2(QString xPath,int xLayerSize, int s, int w, int h, Mat xOutPu
         auto tList=xOutPutImages.ptr<float>(r);
         Mat tTempOut;
         if(xLayerSize==1)
-            tTempOut=Mat::zeros(h,w,CV_32FC1);
+            tTempOut=Mat::zeros(s,s,CV_32FC1);
         if(xLayerSize==2)
-            tTempOut=Mat::zeros(h,w,CV_32FC2);
+            tTempOut=Mat::zeros(s,s,CV_32FC2);
         if(xLayerSize==3)
-            tTempOut=Mat::zeros(h,w,CV_32FC3);
+            tTempOut=Mat::zeros(s,s,CV_32FC3);
         if(xLayerSize==4)
-            tTempOut=Mat::zeros(h,w,CV_32FC4);
+            tTempOut=Mat::zeros(s,s,CV_32FC4);
         last=tTempOut.ptr<float>(0);
         for (int col = 0;col<xOutPutImages.cols;tList++,last++,col++)
+        {
             *last=(*tList)*255;
+        }
 
         //tSplitedImage[r].copyTo(image2(Rect( x*s, y*s, s, s)));
         tTempOut.copyTo(image2(Rect( x*s, y*s, s, s)));
@@ -96,7 +98,8 @@ void SaveToImages2(QString xPath,int xLayerSize, int s, int w, int h, Mat xOutPu
         }
         if(x*s>=w)
         {
-            QString Name=QDir().currentPath()+xPath+QString::number(nameID++)+".jpg";
+            QString Name=QDir().currentPath()+xPath+QString::number(++nameID)+".jpg";
+            qDebug() << Name;
             imwrite( Name.toStdString(), image2 );
             x=0;
             y=0;
@@ -303,11 +306,11 @@ void SplitImages2(int xIntSize, int xLayetSize, int xSize, int h, int w, QList<M
                     int y=tRect.height*((int)im/((int)sqrt(xIntSize)));
                     Mat dst_roi = tTemp(Rect(x,y,tRect.width,tRect.height));
                     Mat tCopy=tTempImage[im](tRect);
-                     tCopy.copyTo(dst_roi);
+                    tCopy.copyTo(dst_roi);
                 }
-                namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
-                imshow( "Display window", tTemp );
-                waitKey(10);
+                //namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
+                //imshow( "Display window", tTemp );
+                //waitKey(10);
                 tSplitedImage.append(tTemp);
             }
         }
@@ -341,34 +344,45 @@ int main(int argc, char** argv)
 
     QList<QList<float>> tInList;
     QList<QList<float>> tOutList;
-    int w,h,s;
+    int w, h, s, sout;
     h=576;//1008;
-    w=720;//704;
-    s=16;
-    int max=s*s*3;
+    w=736;//704;
+    s=32;
+    sout=s/2;
+    int maxInput=s*s*3;
+    int maxOutput=sout*sout*3;
 
-    SplitImages2(4, 3, s, h, w, tInput, tInList, max);
-    SplitImages2(1, 3, s, h, w, tResponses, tOutList, max);
+    SplitImages2(4, 3, s, h*2, w*2, tInput, tInList, maxInput);
+    SplitImages2(1, 3, sout, h, w, tResponses, tOutList, maxOutput);
 
-    int inputLayerSize = max;
-    int outputLayerSize = max;
+    int inputLayerSize = maxInput;
+    int outputLayerSize = maxOutput;
     int numSamples = tOutList.length();
 
     Mat samples( Size( inputLayerSize, numSamples ), CV_32F );
     Mat responses( Size( outputLayerSize, numSamples ), CV_32F );
 
     int index=0;
-    while(index < max)
+    while(index < maxInput)
+    {
+        for(int s = 0; s < tInList.length(); s++)
+        {
+            samples.at<float>( Point( index, s ) ) = tInList[s][index];
+        }
+        index++;
+    }
+    index=0;
+    while(index < maxOutput)
     {
         for(int s = 0; s < tOutList.length(); s++)
         {
-            samples.at<float>( Point( index, s ) ) = tInList[s][index];
             responses.at<float>( Point( index, s ) ) = tOutList[s][index];
         }
         index++;
     }
 
-    vector<int> layerSizes = { max, max*2, max*3, max*2, max };
+    //SaveToImages2("/Output/",3, sout, w, h, responses);
+    vector<int> layerSizes = { maxInput, (maxInput+maxOutput)*0.5, maxOutput };
     Ptr<ml::ANN_MLP> nnPtr;
     if(QFileInfo("Color.yml").exists())
     {
@@ -384,8 +398,8 @@ int main(int argc, char** argv)
         nnPtr->setTrainMethod(ml::ANN_MLP::BACKPROP,0.01,0.01);
 
         TermCriteria tc;
-        tc.epsilon=0.00001;
-        tc.maxCount=100000;
+        tc.epsilon=0.0001;
+        tc.maxCount=1000;
         tc.type = TermCriteria::MAX_ITER + TermCriteria::EPS;
 
         cout << "begin training:\n" << endl;
@@ -443,7 +457,7 @@ int main(int argc, char** argv)
         {
             //nnPtr->save("Color.yml");
             cout << "Saving\n" << endl;
-            SaveToImages2("/Output/"+QString::number(tErrorDiff),3, s, w, h, output);
+            SaveToImages2("/Output/"+QString::number(tErrorDiff)+"i.i*2.o*2.o",3, sout, w, h, output);
             cout << "Finished\n" << endl;
             oldErrorDiff=tErrorDiff;
         }
