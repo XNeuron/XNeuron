@@ -115,7 +115,7 @@ QList<Mat> LoadImage(QString Path)
     {
         if(QFileInfo(Name).exists())
         {
-            Mat temp=imread(Name.toStdString());
+            Mat temp=imread(Name.toStdString(),CV_LOAD_IMAGE_GRAYSCALE);
             tInput.append(temp);
             Name=QDir().currentPath()+Path+QString::number(file++)+".jpg";
         }
@@ -299,7 +299,17 @@ void SplitImages2(int xIntSize, int xLayetSize, int xSize, int h, int w, QList<M
                 //Mat tRect(xSize,xSize);
 
                 Rect tRect = Rect( iCol*xSize/sqrt(xIntSize), iRow*xSize/sqrt(xIntSize), xSize/sqrt(xIntSize), xSize/sqrt(xIntSize));
-                Mat tTemp(xSize,xSize,CV_8UC3,255.0);
+                Mat tTemp/*(xSize,xSize,CV_8UC3,255.0)*/;
+
+                if(xLayetSize==1)
+                    tTemp=Mat::zeros(xSize,xSize,CV_8UC1);
+                if(xLayetSize==2)
+                    tTemp=Mat::zeros(xSize,xSize,CV_8UC2);
+                if(xLayetSize==3)
+                    tTemp=Mat::zeros(xSize,xSize,CV_8UC3);
+                if(xLayetSize==4)
+                    tTemp=Mat::zeros(xSize,xSize,CV_8UC4);
+
                 for (int im = 0; im < tTempImage.count(); ++im)
                 {
                     int x=tRect.width*(im%((int)sqrt(xIntSize)));
@@ -338,6 +348,8 @@ int main(int argc, char** argv)
     QDateTime end ;
     QDateTime start = QDateTime::currentDateTime();
     qDebug() << "start time: " << start << "\n";
+
+    int chanalls=1;
     QList<Mat> tInput=LoadImage("/Input/");
 
     QList<Mat> tResponses=LoadImage("/Responses/");
@@ -345,15 +357,15 @@ int main(int argc, char** argv)
     QList<QList<float>> tInList;
     QList<QList<float>> tOutList;
     int w, h, s, sout;
-    h=576;//1008;
-    w=736;//704;
-    s=32;
+    h=360;//576;//1008;
+    w=360;//704;
+    s=8;
     sout=s/2;
-    int maxInput=s*s*3;
-    int maxOutput=sout*sout*3;
+    int maxInput=s*s*chanalls;
+    int maxOutput=sout*sout*chanalls;
 
-    SplitImages2(4, 3, s, h*2, w*2, tInput, tInList, maxInput);
-    SplitImages2(1, 3, sout, h, w, tResponses, tOutList, maxOutput);
+    SplitImages2(4, chanalls, s, h*2, w*2, tInput, tInList, maxInput);
+    SplitImages2(1, chanalls, sout, h, w, tResponses, tOutList, maxOutput);
 
     int inputLayerSize = maxInput;
     int outputLayerSize = maxOutput;
@@ -382,7 +394,7 @@ int main(int argc, char** argv)
     }
 
     //SaveToImages2("/Output/",3, sout, w, h, responses);
-    vector<int> layerSizes = { maxInput, (maxInput+maxOutput)*0.5, maxOutput };
+    vector<int> layerSizes = { maxInput, (maxInput+maxOutput), maxOutput };
     Ptr<ml::ANN_MLP> nnPtr;
     if(QFileInfo("Color.yml").exists())
     {
@@ -394,8 +406,8 @@ int main(int argc, char** argv)
         nnPtr = ml::ANN_MLP::create();
 
         nnPtr->setLayerSizes( layerSizes );
-        nnPtr->setActivationFunction( cv::ml::ANN_MLP::SIGMOID_SYM, 1, 1 );
-        nnPtr->setTrainMethod(ml::ANN_MLP::BACKPROP,0.01,0.01);
+        nnPtr->setActivationFunction(cv::ml::ANN_MLP::SIGMOID_SYM, 1, 1 );
+        nnPtr->setTrainMethod(ml::ANN_MLP::BACKPROP,0.000001,0.000001);
 
         TermCriteria tc;
         tc.epsilon=0.0001;
@@ -457,7 +469,7 @@ int main(int argc, char** argv)
         {
             //nnPtr->save("Color.yml");
             cout << "Saving\n" << endl;
-            SaveToImages2("/Output/"+QString::number(tErrorDiff)+"i.i*2.o*2.o",3, sout, w, h, output);
+            SaveToImages2("/Output/"+QString::number(tErrorDiff),chanalls, sout, w, h, output);
             cout << "Finished\n" << endl;
             oldErrorDiff=tErrorDiff;
         }
