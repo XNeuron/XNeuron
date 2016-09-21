@@ -241,7 +241,7 @@ QList<Mat> LoadImage(QString Path, int Frames)
     return tInput;
 }
 
-void SplitImages(int &h, int &w, QList<Mat> &tInput, QList<QList<float>> &tBWList, int &max)
+void SplitImages(int &h, int &w, QList<Mat> &tInput, QList<QList<float> > &tBWList, int &max)
 {
     int current=0;
     for(int m=0;m<tInput.length();m++)
@@ -282,7 +282,7 @@ void SplitImages(int &h, int &w, QList<Mat> &tInput, QList<QList<float>> &tBWLis
     }
 }
 
-void SplitImages2(int xLayetSize, int xSize, int h, int w, QList<Mat> &tInput, QList<QList<float>> &tBWList, int &max)
+void SplitImages2(int xLayetSize, int xSize, int h, int w, QList<Mat> &tInput, QList<QList<float> > &tBWList, int &max)
 {
     for(int m=0;m<tInput.length();m++)
     {
@@ -347,7 +347,22 @@ Mat normolizeImage(int m, int w, int h, QList<Mat> &tInput)
     return tTempImage;
 }
 
-void SplitImages2(int xIntSize, int xLayetSize, int xSize, int h, int w, QList<Mat> &tInput, QList<QList<float>> &tBWList, int &max)
+Mat normolizeImage(int x, int y, int m, int w, int h, QList<Mat> &tInput)
+{
+    Mat tInputImage;
+    int tH=(tInput[m].rows-y>h)?(h):(tInput[m].rows-y);
+    int tW=(tInput[m].cols-x>w)?(w):(tInput[m].cols-x);
+    if(tInput[m].rows-y>0&&tInput[m].cols-x)
+        tInputImage=tInput[m](Rect( x, y, tW, tH));
+    Mat tTempImage;
+    tTempImage=Mat::zeros(h,w,tInputImage.type());
+    if(tInput[m].rows-y>0&&tInput[m].cols-x)
+        tInputImage.copyTo(tTempImage(Rect( 0, 0, tW, tH)));
+
+    return tTempImage;
+}
+
+void SplitImages2(int xIntSize, int xLayetSize, int xSize, int h, int w, QList<Mat> &tInput, QList<QList<float> > &tBWList, int &max)
 {
     for(int m=0;m < tInput.length() - (xIntSize-1);m++)
     {
@@ -414,7 +429,7 @@ void SplitImages2(int xIntSize, int xLayetSize, int xSize, int h, int w, QList<M
     }
 }
 
-void SplitImages3(int xTeiler, int xFrameCount, int xLayetSize, int xSize, int h, int w, QList<Mat> &tInput, QList<QList<float>> &tBWList, int &max,bool xCutOff=false)
+void SplitImages3(int xTeiler, int xFrameCount, int xLayetSize, int xSize, int h, int w, QList<Mat> &tInput, QList<QList<float> > &tBWList, int &max,bool xCutOff=false)
 {
     for(int m=0;m < tInput.length() - (xFrameCount-1);m++)
     {
@@ -488,42 +503,82 @@ void SplitImages3(int xTeiler, int xFrameCount, int xLayetSize, int xSize, int h
     }
 }
 
-int main(int argc, char** argv)
+void SplitImages4(int startPosX, int startPosY,int xTeiler, int xFrameCount, int xLayetSize, int xSize, int h, int w, QList<Mat> &tInput, QList<QList<float> > &tBWList, int &max,bool xCutOff=false)
 {
-    QApplication a(argc,argv);
-    QDateTime end ;
-    QDateTime start = QDateTime::currentDateTime();
-    qDebug() << "start time: " << start << "\n";
+    for(int m=0;m < tInput.length() - (xFrameCount-1);m++)
+    {
+        QList<Mat> tTempImage;
+        for (int t = 0; t < xFrameCount; ++t) {
+            tTempImage.append(normolizeImage(startPosX,startPosY,m+t, w, h, tInput));
+            //namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
+            //imshow( "Display window", tTempImage.last() );
+            //waitKey(100);
+        }
 
-    int chanalls=1;
-    int teiler=20;
-    QList<Mat> tInput=LoadImage2("/Input/",chanalls);
+        QList<Mat> tSplitedImage;
+        int ColMax=(w/xSize)*xTeiler*sqrt(xFrameCount)-xTeiler;
+        int RowMax=(h/xSize)*xTeiler*sqrt(xFrameCount)-xTeiler;
 
-    QList<Mat> tResponses=LoadImage2("/Responses/",chanalls);
+        for (int iCol = 0; iCol <= ColMax; iCol++)
+        {
+            for (int iRow = 0; iRow <= RowMax; iRow++)
+            {
+                //Mat tRect(xSize,xSize);
 
-    QList<QList<float>> tInList;
-    QList<QList<float>> tOutList;
-    int w, h, s, sout;
-    h=120;//360;//576;//1008;
-    w=120;//360;//704;
-    s=40;
-    sout=s/2;
-    int maxInput=s*s*chanalls;
-    int maxOutput=sout*sout*chanalls/(teiler*teiler);
+                Rect tRect = Rect( iCol*xSize/(sqrt(xFrameCount)*xTeiler), iRow*xSize/(sqrt(xFrameCount)*xTeiler), xSize/sqrt(xFrameCount), xSize/sqrt(xFrameCount));
 
-    SplitImages3(teiler,4, chanalls, s, h, w, tInput, tInList, maxInput);
-    SplitImages3(teiler,1, chanalls, sout, h, w, tResponses, tOutList, maxOutput,true);
+                Mat tTemp(xSize,xSize,tTempImage.last().type(),255.0);
+                if(xCutOff)
+                {
+                    tTemp=Mat(xSize/xTeiler,xSize/xTeiler,tTempImage.last().type(),255.0);
+                }
+                for (int im = 0; im < tTempImage.count(); ++im)
+                {
+                    int x=tRect.width*(im%((int)sqrt(xFrameCount)));
+                    int y=tRect.height*((int)im/((int)sqrt(xFrameCount)));
+                    Mat dst_roi;
+                    if(xCutOff)
+                    {
+                        dst_roi = tTemp(Rect(x,y,tRect.width/xTeiler,tRect.height/xTeiler));
+                        tRect.height=tRect.height/xTeiler;
+                        tRect.width=tRect.width/xTeiler;
+                    }
+                    else
+                        dst_roi = tTemp(Rect(x,y,tRect.width,tRect.height));
+                    Mat tCopy=tTempImage[im](tRect);
+                    tCopy.copyTo(dst_roi);
+                    //                                        if(xCutOff)
+                    //                                        {
+                    //                                            namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
+                    //                                            imshow( "Display window", tTemp );
+                    //                                            waitKey(100);
+                    //                                        }
+                }
+                tSplitedImage.append(tTemp);
+            }
+        }
 
-    tInput.clear();
-    tResponses.clear();
+        for(auto tIterator=tSplitedImage.begin();tIterator<tSplitedImage.end();tIterator++)
+        {
+            Mat tQuad = (*tIterator).clone();
+            auto tPtr=tQuad.ptr<uchar>(0);
+            QList<float> tBWRow;
+            for (int tY = 0; tY < tQuad.rows; tY++)
+            {
+                for (int tX = 0; tX < tQuad.cols*xLayetSize; tX++)
+                {
+                    tBWRow.append((float)(*tPtr++)/255);
+                }
+            }
+            tQuad.release();
+            tBWList.append(tBWRow);
+        }
+        tSplitedImage.clear();
+    }
+}
 
-    int inputLayerSize = maxInput;
-    int outputLayerSize = maxOutput;
-    int numSamples = tOutList.length();
-
-    Mat samples( Size( inputLayerSize, numSamples ), CV_32F );
-    Mat responses( Size( outputLayerSize, numSamples ), CV_32F );
-
+void ConvertToMat(int maxOutput, Mat responses, QList<QList<float>> tOutList, Mat samples, int maxInput, QList<QList<float>> tInList, QList<Mat> tResponses)
+{
     int index=0;
     while(index < maxInput)
     {
@@ -545,9 +600,48 @@ int main(int argc, char** argv)
 
     tInList.clear();
     tResponses.clear();
+}
+
+int main(int argc, char** argv)
+{
+    QApplication a(argc,argv);
+    QDateTime end ;
+    QDateTime start = QDateTime::currentDateTime();
+    qDebug() << "start time: " << start << "\n";
+
+    int chanalls=1;
+    int teiler=20;
+    QList<Mat> tInput=LoadImage2("/Input/",chanalls);
+
+    QList<Mat> tResponses=LoadImage2("/Responses/",chanalls);
+
+    QList<QList<float>> tInList;
+    QList<QList<float>> tOutList;
+    int w, h, s, sout, tXBegin, tYBegin, tImageHeight, tImageWidth;
+    tImageHeight=tInput[0].rows;
+    tImageWidth=tInput[0].cols;
+    tXBegin=tYBegin=0;
+    h=120;//360;//576;//1008;
+    w=120;//360;//704;
+    s=40;
+    sout=s/2;
+    int maxInput=s*s*chanalls;
+    int maxOutput=sout*sout*chanalls/(teiler*teiler);
+    int inputLayerSize = maxInput;
+    int outputLayerSize = maxOutput;
+
+    SplitImages4(tXBegin,tXBegin,teiler,4, chanalls, s, h, w, tInput, tInList, maxInput);
+    SplitImages4(tXBegin,tXBegin,teiler,1, chanalls, sout, h, w, tResponses, tOutList, maxOutput,true);
+
+    int numSamples = tOutList.length();
+
+    Mat samples( Size( inputLayerSize, numSamples ), CV_32F );
+    Mat responses( Size( outputLayerSize, numSamples ), CV_32F );
+
+    ConvertToMat(maxOutput, responses, tOutList, samples, maxInput, tInList, tResponses);
 
     //SaveToImages3("/Output/"+QString::number(1),teiler,chanalls, sout, w, h, responses, true);
-    vector<int> layerSizes = { maxInput, (maxInput+maxOutput),(maxInput+maxOutput)/2, maxOutput };
+    vector<int> layerSizes = { maxInput, (maxInput+maxOutput)*2,(maxInput+maxOutput),(maxInput+maxOutput)/2, maxOutput };
     Ptr<ml::ANN_MLP> nnPtr;
     if(QFileInfo("Color.yml").exists())
     {
@@ -571,15 +665,14 @@ int main(int argc, char** argv)
         if ( !nnPtr->train( samples, ml::ROW_SAMPLE, responses ) )
             return 1;
         cout << "end training:\n" << endl;
-        //nnPtr->save("Color.yml");
+        nnPtr->save("Color.yml");
         QDateTime end = QDateTime::currentDateTime();
         qDebug() << "end training: " << end << "\n";
         qDebug() << "diff time training: " << start.msecsTo(end) << "\n";
     }
 
-    cout << "Predicting\n" << endl;
+
     Mat output;
-    nnPtr->predict( samples, output );
 
     double tErrorDiff=0;
     double tError=1;
@@ -588,6 +681,8 @@ int main(int argc, char** argv)
     double oldErrorDiff=0;
     do
     {
+        cout << "Predicting\n" << endl;
+        nnPtr->predict( samples, output );
         cout << "Calculate Error:\n" << endl;
 
         tErrorDiff=0;
@@ -618,20 +713,34 @@ int main(int argc, char** argv)
         qDebug() << "loop end time: " << end << "\n";
         qDebug() << "loop diff time: " << start.msecsTo(end) << "\n";
 
-        if(oldErrorDiff!=tErrorDiff||tErrorDiff==0)
+        nnPtr->save("Color.yml");
+        cout << "Saving\n" << endl;
+        SaveToImages3("/Output/"+QString::number(tErrorDiff)+"x"+QString::number(tXBegin)+"y"+QString::number(tXBegin),teiler,chanalls, sout, w, h, output, true);
+        cout << "Finished\n" << endl;
+        oldErrorDiff=tErrorDiff;
+
+        tInList.clear();
+        tOutList.clear();
+
+        tXBegin+=w-s;
+        if(tXBegin>tImageWidth)
         {
-            //nnPtr->save("Color.yml");
-            cout << "Saving\n" << endl;
-            SaveToImages3("/Output/"+QString::number(tErrorDiff),teiler,chanalls, sout, w, h, output, true);
-            cout << "Finished\n" << endl;
-            oldErrorDiff=tErrorDiff;
+            tYBegin+=h-s;
+            tXBegin=0;
+            if(tYBegin>tImageWidth)
+                break;
         }
+
+        SplitImages4(tXBegin,tYBegin,teiler,4, chanalls, s, h, w, tInput, tInList, maxInput);
+        SplitImages4(tXBegin,tYBegin,teiler,1, chanalls, sout, h, w, tResponses, tOutList, maxOutput,true);
+
+        ConvertToMat(maxOutput, responses, tOutList, samples, maxInput, tInList, tResponses);
 
         cout << "begin training:\n" << endl;
         if ( !nnPtr->train( samples, ml::ROW_SAMPLE, responses ) )
             return 1;
         cout << "end training:\n" << endl;
-    }while(tErrorDiff>0.01);
+    }while(true);
 
 
     end = QDateTime::currentDateTime();
