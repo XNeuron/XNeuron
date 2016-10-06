@@ -15,6 +15,8 @@
 using namespace cv;
 using namespace std;
 
+int w, h, s, sout, tXBegin, tYBegin, tImageHeight, tImageWidth;
+
 void SaveToImages(int index, QString xPath, int w, int h, Mat xOutPutImage)
 {
     Mat image2( Size( w, h ), CV_32FC3);
@@ -23,7 +25,6 @@ void SaveToImages(int index, QString xPath, int w, int h, Mat xOutPutImage)
     int index3=0;
     for( int r=0; r < xOutPutImage.rows;r++)
     {
-
         auto Out1=xOutPutImage.ptr<float>(r);
         for( int c=0; c < xOutPutImage.cols;c++)
         {
@@ -54,7 +55,6 @@ void SaveToImages(int index, QString xPath, int w, int h, Mat xOutPutImage)
     }
 
 }
-
 
 void SaveToImages2(QString xPath,int xLayerSize, int s, int w, int h, Mat xOutPutImages)
 {
@@ -107,7 +107,7 @@ void SaveToImages2(QString xPath,int xLayerSize, int s, int w, int h, Mat xOutPu
     }
 }
 
-void SaveToImages3(QString xPath,int xTeiler, int xLayerSize, int s, int w, int h, Mat xOutPutImages, bool xCutOff=false)
+void SaveToImages3(QString xPath,int xTeiler, int xLayerSize, int s, int w, int h, Mat xOutPutImages, bool xCutOff=false, int xFrame=1,int xError=0, int xX=0, int xY=0)
 {
     Mat image2;
     if(xLayerSize==1)
@@ -156,9 +156,25 @@ void SaveToImages3(QString xPath,int xTeiler, int xLayerSize, int s, int w, int 
                 //imshow( "Display window", image2 );
                 //waitKey(1000);
 
-                QString Name=QDir().currentPath()+xPath+QString::number(++nameID)+".jpg";
+                QFile outputFile(QDir().currentPath()+xPath+QString::number(xFrame)+".txt");
+                outputFile.open(QIODevice::WriteOnly | QIODevice::Append);
+
+                QTextStream out(&outputFile);
+
+                out << xError << endl;
+
+                outputFile.close();
+
+                QString Name=QDir().currentPath()+xPath+QString::number(xFrame)+".jpg";
                 qDebug() << Name;
-                imwrite( Name.toStdString(), image2 );
+                Mat tImage;
+
+                if(QFileInfo(Name).exists())
+                    tImage = imread(Name.toStdString(), CV_LOAD_IMAGE_GRAYSCALE);
+                else
+                    tImage = Mat(tImageHeight*1.5,tImageWidth*1.5,image2.type(),255);
+                image2.copyTo(tImage(Rect(xX,xY,image2.cols,image2.rows)));
+                imwrite( Name.toStdString(), tImage );
                 x=0;
                 y=0;
             }
@@ -182,10 +198,11 @@ void SaveToImages3(QString xPath,int xTeiler, int xLayerSize, int s, int w, int 
     }
 }
 
-QList<Mat> LoadImage2(QString Path, int xLayerSize)
+QList<Mat> LoadImage2(QString Path, int xLayerSize,int file=1, int filestoload=4)
 {
     QList<Mat> tInput;
-    int file=1;
+
+    int filenr=0;
     QString Name=QDir().currentPath()+Path+QString::number(file++)+".jpg";
     do
     {
@@ -198,7 +215,7 @@ QList<Mat> LoadImage2(QString Path, int xLayerSize)
             tInput.append(temp);
             Name=QDir().currentPath()+Path+QString::number(file++)+".jpg";
         }
-    }while(QFileInfo(Name).exists());
+    }while(QFileInfo(Name).exists()&&filenr++<filestoload);
 
     return tInput;
 }
@@ -611,137 +628,151 @@ int main(int argc, char** argv)
 
     int chanalls=1;
     int teiler=20;
-    QList<Mat> tInput=LoadImage2("/Input/",chanalls);
-
-    QList<Mat> tResponses=LoadImage2("/Responses/",chanalls);
-
-    QList<QList<float>> tInList;
-    QList<QList<float>> tOutList;
-    int w, h, s, sout, tXBegin, tYBegin, tImageHeight, tImageWidth;
-    tImageHeight=tInput[0].rows;
-    tImageWidth=tInput[0].cols;
-    tXBegin=tYBegin=0;
-    h=120;//360;//576;//1008;
-    w=120;//360;//704;
-    s=40;
-    sout=s/2;
-    int maxInput=s*s*chanalls;
-    int maxOutput=sout*sout*chanalls/(teiler*teiler);
-    int inputLayerSize = maxInput;
-    int outputLayerSize = maxOutput;
-
-    SplitImages4(tXBegin,tXBegin,teiler,4, chanalls, s, h, w, tInput, tInList, maxInput);
-    SplitImages4(tXBegin,tXBegin,teiler,1, chanalls, sout, h, w, tResponses, tOutList, maxOutput,true);
-
-    int numSamples = tOutList.length();
-
-    Mat samples( Size( inputLayerSize, numSamples ), CV_32F );
-    Mat responses( Size( outputLayerSize, numSamples ), CV_32F );
-
-    ConvertToMat(maxOutput, responses, tOutList, samples, maxInput, tInList, tResponses);
-
-    //SaveToImages3("/Output/"+QString::number(1),teiler,chanalls, sout, w, h, responses, true);
-    vector<int> layerSizes = { maxInput, (maxInput+maxOutput)*2,(maxInput+maxOutput),(maxInput+maxOutput)/2, maxOutput };
-    Ptr<ml::ANN_MLP> nnPtr;
-    if(QFileInfo("Color.yml").exists())
+    int frameanzahlgesammt = 20;
+    int frameanzahl=4;
+    for (int var = 0; var < frameanzahlgesammt-frameanzahl+1; ++var)
     {
-        cout << "Loading\n" << endl;
-        nnPtr=Algorithm::load<ml::ANN_MLP>("Color.yml");
-    }
-    else
-    {
-        nnPtr = ml::ANN_MLP::create();
+        QList<Mat> tInput=LoadImage2("/Input/", chanalls, var+1);
+        QList<Mat> tResponses=LoadImage2("/Responses/", chanalls, var+1);
 
-        nnPtr->setLayerSizes( layerSizes );
-        nnPtr->setActivationFunction(cv::ml::ANN_MLP::SIGMOID_SYM, 1, 1 );
-        nnPtr->setTrainMethod(ml::ANN_MLP::BACKPROP,0.000001,0.000001);
+        QList<QList<float>> tInList;
+        QList<QList<float>> tOutList;
+        tImageHeight=tInput[0].rows;
+        tImageWidth=tInput[0].cols;
+        tXBegin=tYBegin=0;
+        h=120;//360;//576;//1008;
+        w=120;//360;//704;
+        s=40;
+        sout=s/2;
+        int maxInput=s*s*chanalls;
+        int maxOutput=sout*sout*chanalls/(teiler*teiler);
+        int inputLayerSize = maxInput;
+        int outputLayerSize = maxOutput;
 
-        TermCriteria tc;
-        tc.epsilon=0.00001;
-        tc.maxCount=10000;
-        tc.type = TermCriteria::MAX_ITER + TermCriteria::EPS;
+        SplitImages4(tXBegin,tXBegin,teiler,frameanzahl, chanalls, s, h, w, tInput, tInList, maxInput);
+        SplitImages4(tXBegin,tXBegin,teiler,1, chanalls, sout, h, w, tResponses, tOutList, maxOutput,true);
 
-        cout << "begin training:\n" << endl;
-        if ( !nnPtr->train( samples, ml::ROW_SAMPLE, responses ) )
-            return 1;
-        cout << "end training:\n" << endl;
-        nnPtr->save("Color.yml");
-        QDateTime end = QDateTime::currentDateTime();
-        qDebug() << "end training: " << end << "\n";
-        qDebug() << "diff time training: " << start.msecsTo(end) << "\n";
-    }
+        int numSamples = tOutList.length();
 
-
-    Mat output;
-
-    double tErrorDiff=0;
-    double tError=1;
-    int tDiff=1;
-
-    double oldErrorDiff=0;
-    do
-    {
-        cout << "Predicting\n" << endl;
-        nnPtr->predict( samples, output );
-        cout << "Calculate Error:\n" << endl;
-
-        tErrorDiff=0;
-        tError=1;
-        tDiff=1;
-        for( int r=0; r < samples.rows;r++)
-        {
-            auto Out1=output.ptr<float>(r);
-            auto Out2=responses.ptr<float>(r);
-            for( int c=0; c < output.cols;c++)
-            {
-                tErrorDiff+=abs(Out1[c]-Out2[c]);
-                if(Out1[c]!=0&&Out2[c]!=0)
-                {
-                    tError+=Out2[c]/Out1[c];
-                }
-                tDiff++;
-            }
-        }
-
-        tErrorDiff=tErrorDiff/tDiff;
-        tError=tError/tDiff;
-
-        cout << "Error Diff: " << tErrorDiff << endl;
-        cout << "Error Factor: " << tError << endl;
-
-        end = QDateTime::currentDateTime();
-        qDebug() << "loop end time: " << end << "\n";
-        qDebug() << "loop diff time: " << start.msecsTo(end) << "\n";
-
-        nnPtr->save("Color.yml");
-        cout << "Saving\n" << endl;
-        SaveToImages3("/Output/"+QString::number(tErrorDiff)+"x"+QString::number(tXBegin)+"y"+QString::number(tXBegin),teiler,chanalls, sout, w, h, output, true);
-        cout << "Finished\n" << endl;
-        oldErrorDiff=tErrorDiff;
-
-        tInList.clear();
-        tOutList.clear();
-
-        tXBegin+=w-s;
-        if(tXBegin>tImageWidth)
-        {
-            tYBegin+=h-s;
-            tXBegin=0;
-            if(tYBegin>tImageWidth)
-                break;
-        }
-
-        SplitImages4(tXBegin,tYBegin,teiler,4, chanalls, s, h, w, tInput, tInList, maxInput);
-        SplitImages4(tXBegin,tYBegin,teiler,1, chanalls, sout, h, w, tResponses, tOutList, maxOutput,true);
+        Mat samples( Size( inputLayerSize, numSamples ), CV_32F );
+        Mat responses( Size( outputLayerSize, numSamples ), CV_32F );
 
         ConvertToMat(maxOutput, responses, tOutList, samples, maxInput, tInList, tResponses);
 
-        cout << "begin training:\n" << endl;
-        if ( !nnPtr->train( samples, ml::ROW_SAMPLE, responses ) )
-            return 1;
-        cout << "end training:\n" << endl;
-    }while(true);
+        //SaveToImages3("/Output/"+QString::number(1),teiler,chanalls, sout, w, h, responses, true);
+        vector<int> layerSizes = { maxInput, (maxInput+maxOutput)*2, (maxInput+maxOutput)/2, maxOutput };
+        Ptr<ml::ANN_MLP> nnPtr;
+        if(QFileInfo("Color.yml").exists())
+        {
+            cout << "Loading\n" << endl;
+            nnPtr=Algorithm::load<ml::ANN_MLP>("Color.yml");
+        }
+        else
+        {
+            nnPtr = ml::ANN_MLP::create();
 
+            nnPtr->setLayerSizes( layerSizes );
+            nnPtr->setActivationFunction(cv::ml::ANN_MLP::SIGMOID_SYM, 1, 1 );
+            nnPtr->setTrainMethod(ml::ANN_MLP::BACKPROP,0.000001,0.000001);
+
+            TermCriteria tc;
+            tc.epsilon=0.00001;
+            tc.maxCount=10000;
+            tc.type = TermCriteria::MAX_ITER + TermCriteria::EPS;
+
+            cout << "begin training:\n" << endl;
+            if ( !nnPtr->train( samples, ml::ROW_SAMPLE, responses ) )
+                return 1;
+            cout << "end training:\n" << endl;
+            nnPtr->save("Color.yml");
+            QDateTime end = QDateTime::currentDateTime();
+            qDebug() << "end training: " << end << "\n";
+            qDebug() << "diff time training: " << start.msecsTo(end) << "\n";
+        }
+
+
+        Mat output;
+
+        double tErrorDiff=0;
+        double tError=1;
+        int tDiff=1;
+
+        double oldErrorDiff=0;
+        do
+        {
+            cout << "Predicting\n" << endl;
+            nnPtr->predict( samples, output );
+            cout << "Calculate Error:\n" << endl;
+
+            tErrorDiff=0;
+            tError=1;
+            tDiff=1;
+            for( int r=0; r < samples.rows;r++)
+            {
+                auto Out1=output.ptr<float>(r);
+                auto Out2=responses.ptr<float>(r);
+                for( int c=0; c < output.cols;c++)
+                {
+                    tErrorDiff+=abs(Out1[c]-Out2[c]);
+                    if(Out1[c]!=0&&Out2[c]!=0)
+                    {
+                        tError+=Out2[c]/Out1[c];
+                    }
+                    tDiff++;
+                }
+            }
+
+            tErrorDiff=tErrorDiff/tDiff;
+            tError=tError/tDiff;
+
+            cout << "Error Diff: " << tErrorDiff << endl;
+            cout << "Error Factor: " << tError << endl;
+
+            end = QDateTime::currentDateTime();
+            qDebug() << "loop end time: " << end << "\n";
+            qDebug() << "loop diff time: " << start.msecsTo(end) << "\n";
+
+            nnPtr->save("Color.yml");
+            cout << "Saving\n" << endl;
+            SaveToImages3("/Output/", teiler, chanalls, sout, w, h, responses/*output*/, true, var+1,tErrorDiff,tXBegin,tYBegin);
+            cout << "Finished\n" << endl;
+            oldErrorDiff=tErrorDiff;
+
+            tInList.clear();
+            tOutList.clear();
+
+            tXBegin+=w-s;
+            if(tXBegin>tImageWidth)
+            {
+                tYBegin+=h-s;
+                tXBegin=0;
+                if(tYBegin>tImageWidth)
+                    break;
+            }
+
+            SplitImages4(tXBegin,tYBegin,teiler,4, chanalls, s, h, w, tInput, tInList, maxInput);
+            SplitImages4(tXBegin,tYBegin,teiler,1, chanalls, sout, h, w, tResponses, tOutList, maxOutput,true);
+
+            ConvertToMat(maxOutput, responses, tOutList, samples, maxInput, tInList, tResponses);
+
+            cout << "begin training:\n" << endl;
+            if ( !nnPtr->train( samples, ml::ROW_SAMPLE, responses ) )
+                return 1;
+            cout << "end training:\n" << endl;
+        }while(true);
+
+        for(auto i :  tInput  )
+        {
+           i.release();
+        }
+
+        for(auto i :  tResponses  )
+        {
+           i.release();
+        }
+        tInput.clear();
+        tResponses.clear();
+    }
 
     end = QDateTime::currentDateTime();
     qDebug() << "end time: " << end << "\n";

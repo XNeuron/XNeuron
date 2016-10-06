@@ -1,0 +1,101 @@
+\hypertarget{class_x_neuron}{}\section{X\+Neuron Class Reference}
+\label{class_x_neuron}\index{X\+Neuron@{X\+Neuron}}
+Inheritance diagram for X\+Neuron\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_x_neuron}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_x_neuron_ac5616106c0fbf7c527d724b6998c1277}{}\label{class_x_neuron_ac5616106c0fbf7c527d724b6998c1277} 
+virtual bool {\bfseries train} (Q\+List$<$ Q\+List$<$ bool $>$$>$ \&input, Q\+List$<$ bool $>$ \&m\+Output\+Required)
+\item 
+\hypertarget{class_x_neuron_a02e6eed23c4b1d131d2f0fcc2bc358e6}{}\label{class_x_neuron_a02e6eed23c4b1d131d2f0fcc2bc358e6} 
+virtual bool {\bfseries train} (Q\+List$<$ Q\+List$<$ double $>$$>$ \&input, Q\+List$<$ double $>$ \&m\+Output\+Required, Activity\+Function\+::\+Act\+Function)
+\item 
+\hypertarget{class_x_neuron_ac76b3d3ca7fad9a880b83fa5714e1705}{}\label{class_x_neuron_ac76b3d3ca7fad9a880b83fa5714e1705} 
+virtual double {\bfseries output} () const
+\item 
+\hypertarget{class_x_neuron_a7a6306e0dc045f27136252f84870abb7}{}\label{class_x_neuron_a7a6306e0dc045f27136252f84870abb7} 
+virtual bool {\bfseries output\+Binary} () const
+\item 
+\hypertarget{class_x_neuron_a54ef9c2ed729e21641a967d62c956f91}{}\label{class_x_neuron_a54ef9c2ed729e21641a967d62c956f91} 
+virtual double {\bfseries output} (Activity\+Function\+::\+Act\+Function x\+Func) const
+\item 
+\hypertarget{class_x_neuron_aba98d98aaf1e1027239824d19b3797aa}{}\label{class_x_neuron_aba98d98aaf1e1027239824d19b3797aa} 
+virtual Q\+List$<$ double $>$ {\bfseries input} () const
+\item 
+\hypertarget{class_x_neuron_a0ff6275e2532503c795f77e165b59784}{}\label{class_x_neuron_a0ff6275e2532503c795f77e165b59784} 
+virtual void {\bfseries set\+Input} (bool A, bool B)
+\item 
+\hypertarget{class_x_neuron_a6c1a40a9a965fa2e3ae34988b048014b}{}\label{class_x_neuron_a6c1a40a9a965fa2e3ae34988b048014b} 
+virtual void {\bfseries set\+Input} (const Q\+List$<$ bool $>$ \&input)
+\item 
+\hypertarget{class_x_neuron_a16c2071b13ca0e25e88bfa113881d489}{}\label{class_x_neuron_a16c2071b13ca0e25e88bfa113881d489} 
+virtual void {\bfseries set\+Input} (const Q\+List$<$ double $>$ \&input)
+\item 
+\hypertarget{class_x_neuron_a353abf29fecd904cbdbae031b99f5d23}{}\label{class_x_neuron_a353abf29fecd904cbdbae031b99f5d23} 
+virtual void {\bfseries init\+Weight} (const Q\+List$<$ bool $>$ \&input)
+\item 
+\hypertarget{class_x_neuron_a57c9fa808e03d27c96edc9d7774534ce}{}\label{class_x_neuron_a57c9fa808e03d27c96edc9d7774534ce} 
+virtual void {\bfseries Reset\+Weight} (const Q\+List$<$ bool $>$ \&input)
+\item 
+\hypertarget{class_x_neuron_a49794575e12094f4f336909a788b5d03}{}\label{class_x_neuron_a49794575e12094f4f336909a788b5d03} 
+virtual void {\bfseries init\+Weight} (const Q\+List$<$ double $>$ \&input)
+\item 
+\hypertarget{class_x_neuron_a05efde6b330a87218eb9560b93837142}{}\label{class_x_neuron_a05efde6b330a87218eb9560b93837142} 
+virtual void {\bfseries Reset\+Weight} (const Q\+List$<$ double $>$ \&input)
+\item 
+\hypertarget{class_x_neuron_a963745b2b34d5bcfe21be3a81a0b7c18}{}\label{class_x_neuron_a963745b2b34d5bcfe21be3a81a0b7c18} 
+virtual Q\+List$<$ double $>$ {\bfseries weight} () const
+\item 
+\hypertarget{class_x_neuron_a46b611c44bfd8c9ca391a8c55698ca5e}{}\label{class_x_neuron_a46b611c44bfd8c9ca391a8c55698ca5e} 
+virtual void {\bfseries set\+Weight} (double A, double B)
+\item 
+\hypertarget{class_x_neuron_ab91134205006e82b872d9724bc677106}{}\label{class_x_neuron_ab91134205006e82b872d9724bc677106} 
+virtual void {\bfseries set\+Weight} (double A, double B, double C)
+\item 
+\hypertarget{class_x_neuron_a80505d7f586c511cbc79646788ab2f22}{}\label{class_x_neuron_a80505d7f586c511cbc79646788ab2f22} 
+virtual void {\bfseries set\+Weight} (const Q\+List$<$ double $>$ \&weight)
+\item 
+\hypertarget{class_x_neuron_a07b4676157782cfed59364c91cf84aed}{}\label{class_x_neuron_a07b4676157782cfed59364c91cf84aed} 
+virtual double {\bfseries bias} () const
+\item 
+\hypertarget{class_x_neuron_aeaf8310866462df8946df4b2c65e306a}{}\label{class_x_neuron_aeaf8310866462df8946df4b2c65e306a} 
+virtual void {\bfseries Calc\+Output} ()
+\item 
+\hypertarget{class_x_neuron_a8b3849d0c889f676ec3f1863167aadec}{}\label{class_x_neuron_a8b3849d0c889f676ec3f1863167aadec} 
+void {\bfseries set\+Weight} (double A, double B, double C, double D)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_x_neuron_aba949156bcc9aa4a0d84c342bf8b5bf4}{}\label{class_x_neuron_aba949156bcc9aa4a0d84c342bf8b5bf4} 
+Q\+List$<$ \hyperlink{class_x_neuron}{X\+Neuron} $>$ {\bfseries m\+Next\+Neuron}
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_x_neuron_ac69d818c1d38c321a232fd9557635300}{}\label{class_x_neuron_ac69d818c1d38c321a232fd9557635300} 
+Q\+List$<$ double $>$ {\bfseries m\+Input}
+\item 
+\hypertarget{class_x_neuron_abaffc1446ad83470d54c87de5a6a117a}{}\label{class_x_neuron_abaffc1446ad83470d54c87de5a6a117a} 
+double {\bfseries m\+Output} = 0
+\item 
+\hypertarget{class_x_neuron_af4b92137a421c14961971e24ced0f458}{}\label{class_x_neuron_af4b92137a421c14961971e24ced0f458} 
+double {\bfseries m\+Bias} = 0
+\item 
+\hypertarget{class_x_neuron_a7b9457385c80f6ec33dd301b7f071700}{}\label{class_x_neuron_a7b9457385c80f6ec33dd301b7f071700} 
+Activity\+Function\+::\+Act\+Function {\bfseries m\+Func}
+\item 
+\hypertarget{class_x_neuron_a62fecf6b44a6c56f983e20591fa62404}{}\label{class_x_neuron_a62fecf6b44a6c56f983e20591fa62404} 
+Q\+List$<$ double $>$ {\bfseries m\+Weight}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+xneuron.\+h\item 
+xneuron.\+cpp\end{DoxyCompactItemize}
