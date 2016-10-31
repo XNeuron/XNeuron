@@ -45,35 +45,36 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">release\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">release\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">tst_xneurontesttest</TargetName>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</IgnoreImportLibrary>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">debug\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">tst_xneurontesttest</TargetName>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</IgnoreImportLibrary>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.;C:\Qt\5.6\msvc201564\include;C:\Qt\5.6\msvc201564\include\QtTest;C:\Qt\5.6\msvc201564\include\QtCore;release;C:\Qt\5.6\msvc201564\mkspecs\win32-msvc2015;$(QTDIR)\include\QtTest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;C:\Qt\5.6\msvc201564\include;C:\Qt\5.6\msvc201564\include\QtTest;C:\Qt\5.6\msvc201564\include\QtCore;release;C:\Qt\5.6\msvc201564\mkspecs\win32-msvc2015;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-std=c++11 -std=gnu++11 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>release\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
       <DebugInformationFormat>None</DebugInformationFormat>
       <DisableSpecificWarnings>4577;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ObjectFileName>release\</ObjectFileName>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>_CONSOLE;UNICODE;WIN32;WIN64;SRCDIR="C:/Users/Gaara of the Desert/git/qt/XNeuron/01_XNeuron/XNeuronTest/";QT_NO_DEBUG;QT_TESTLIB_LIB;QT_CORE_LIB;QT_TESTCASE_BUILDDIR="C:/Users/Gaara of the Desert/git/qt/XNeuron/01_XNeuron/XNeuronTest";NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CONSOLE;UNICODE;WIN32;WIN64;SRCDIR="C:/Users/Gaara/git/qt/XNeuron/01_XNeuron/XNeuronTest/";QT_NO_DEBUG;QT_TESTLIB_LIB;QT_CORE_LIB;QT_TESTCASE_BUILDDIR="C:/Users/Gaara/git/qt/XNeuron/01_XNeuron/XNeuronTest";NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
-      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>
+      </ProgramDataBaseFileName>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>$(QTDIR)\lib\Qt5Test.lib;$(QTDIR)\lib\Qt5Core.lib;Qt5Test.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(QTDIR)\lib\Qt5Test.lib;$(QTDIR)\lib\Qt5Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;C:\Qt\5.6\msvc201564\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
@@ -91,29 +92,28 @@
       <WarningLevel>0</WarningLevel>
     </Midl>
     <ResourceCompile>
-      <PreprocessorDefinitions>_CONSOLE;UNICODE;WIN32;WIN64;SRCDIR=\"C:/Users/Gaara of the Desert/git/qt/XNeuron/01_XNeuron/XNeuronTest/\";QT_NO_DEBUG;QT_TESTLIB_LIB;QT_CORE_LIB;QT_TESTCASE_BUILDDIR="C:/Users/Gaara of the Desert/git/qt/XNeuron/01_XNeuron/XNeuronTest";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CONSOLE;UNICODE;WIN32;WIN64;SRCDIR=\"C:/Users/Gaara/git/qt/XNeuron/01_XNeuron/XNeuronTest/\";QT_NO_DEBUG;QT_TESTLIB_LIB;QT_CORE_LIB;QT_TESTCASE_BUILDDIR="C:/Users/Gaara/git/qt/XNeuron/01_XNeuron/XNeuronTest";%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.;C:\Qt\5.6\msvc201564\include;C:\Qt\5.6\msvc201564\include\QtTest;C:\Qt\5.6\msvc201564\include\QtCore;debug;C:\Qt\5.6\msvc201564\mkspecs\win32-msvc2015;$(QTDIR)\include\QtTest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;C:\Qt\5.6\msvc201564\include;C:\Qt\5.6\msvc201564\include\QtTest;C:\Qt\5.6\msvc201564\include\QtCore;debug;C:\Qt\5.6\msvc201564\mkspecs\win32-msvc2015;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-std=c++11 -std=gnu++11 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>debug\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4577;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ObjectFileName>debug\</ObjectFileName>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_CONSOLE;UNICODE;WIN32;WIN64;SRCDIR="C:/Users/Gaara of the Desert/git/qt/XNeuron/01_XNeuron/XNeuronTest/";QT_TESTLIB_LIB;QT_CORE_LIB;QT_TESTCASE_BUILDDIR="C:/Users/Gaara of the Desert/git/qt/XNeuron/01_XNeuron/XNeuronTest";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CONSOLE;UNICODE;WIN32;WIN64;SRCDIR="C:/Users/Gaara/git/qt/XNeuron/01_XNeuron/XNeuronTest/";QT_TESTLIB_LIB;QT_CORE_LIB;QT_TESTCASE_BUILDDIR="C:/Users/Gaara/git/qt/XNeuron/01_XNeuron/XNeuronTest";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <WarningLevel>Level3</WarningLevel>
-      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>$(QTDIR)\lib\Qt5Testd.lib;$(QTDIR)\lib\Qt5Cored.lib;Qt5Testd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(QTDIR)\lib\Qt5Testd.lib;$(QTDIR)\lib\Qt5Cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;C:\Qt\5.6\msvc201564\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
@@ -130,39 +130,55 @@
       <WarningLevel>0</WarningLevel>
     </Midl>
     <ResourceCompile>
-      <PreprocessorDefinitions>_CONSOLE;UNICODE;WIN32;WIN64;SRCDIR=\"C:/Users/Gaara of the Desert/git/qt/XNeuron/01_XNeuron/XNeuronTest/\";QT_TESTLIB_LIB;QT_CORE_LIB;QT_TESTCASE_BUILDDIR="C:/Users/Gaara of the Desert/git/qt/XNeuron/01_XNeuron/XNeuronTest";_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CONSOLE;UNICODE;WIN32;WIN64;SRCDIR=\"C:/Users/Gaara/git/qt/XNeuron/01_XNeuron/XNeuronTest/\";QT_TESTLIB_LIB;QT_CORE_LIB;QT_TESTCASE_BUILDDIR="C:/Users/Gaara/git/qt/XNeuron/01_XNeuron/XNeuronTest";_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\XNeuron\ActivityFunction.cpp" />
+    <ClCompile Include="..\XNeuron\OnlineTraining.cpp" />
+    <ClCompile Include="..\XNeuron\gradienttraining.cpp" />
     <ClCompile Include="tst_xneurontesttest.cpp" />
     <ClCompile Include="..\XNeuron\xneuron.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <CustomBuild Include="..\XNeuron\ActivityFunction.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\XNeuron\ActivityFunction.h;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Qt\5.6\msvc201564\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DSRCDIR=\"C:/Users/Gaara/git/qt/XNeuron/01_XNeuron/XNeuronTest/\" -DQT_NO_DEBUG -DQT_TESTLIB_LIB -DQT_CORE_LIB -DQT_TESTCASE_BUILDDIR="C:/Users/Gaara/git/qt/XNeuron/01_XNeuron/XNeuronTest" -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt/5.6/msvc201564/mkspecs/win32-msvc2015 -IC:/Users/Gaara/git/qt/XNeuron/01_XNeuron/XNeuronTest -IC:/Qt/5.6/msvc201564/include -IC:/Qt/5.6/msvc201564/include/QtTest -IC:/Qt/5.6/msvc201564/include/QtCore ..\XNeuron\ActivityFunction.h -o release\moc_ActivityFunction.cpp</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MOC ../XNeuron/ActivityFunction.h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">release\moc_ActivityFunction.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\XNeuron\ActivityFunction.h;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Qt\5.6\msvc201564\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DSRCDIR=\"C:/Users/Gaara/git/qt/XNeuron/01_XNeuron/XNeuronTest/\" -DQT_TESTLIB_LIB -DQT_CORE_LIB -DQT_TESTCASE_BUILDDIR="C:/Users/Gaara/git/qt/XNeuron/01_XNeuron/XNeuronTest" -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt/5.6/msvc201564/mkspecs/win32-msvc2015 -IC:/Users/Gaara/git/qt/XNeuron/01_XNeuron/XNeuronTest -IC:/Qt/5.6/msvc201564/include -IC:/Qt/5.6/msvc201564/include/QtTest -IC:/Qt/5.6/msvc201564/include/QtCore ..\XNeuron\ActivityFunction.h -o debug\moc_ActivityFunction.cpp</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MOC ../XNeuron/ActivityFunction.h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">debug\moc_ActivityFunction.cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <ClInclude Include="..\XNeuron\OnlineTraining.h" />
+    <ClInclude Include="..\XNeuron\gradienttraining.h" />
     <ClInclude Include="..\XNeuron\xneuron.h" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="Debug\tst_xneurontesttest.moc">
+    <ClCompile Include="debug\moc_ActivityFunction.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;.\tst_xneurontesttest.cpp</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing tst_xneurontesttest.cpp...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ConfigurationName)\%(Filename).moc</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "tst_xneurontesttest.cpp" -o "$(ConfigurationName)\%(Filename).moc"  -D_CONSOLE -DUNICODE -DWIN32 -DWIN64 "-DSRCDIR=\"C:/Users/Gaara of the Desert/git/qt/XNeuron/01_XNeuron/XNeuronTest/\"" -DQT_TESTLIB_LIB -DQT_CORE_LIB "-DQT_TESTCASE_BUILDDIR=\"C:/Users/Gaara of the Desert/git/qt/XNeuron/01_XNeuron/XNeuronTest\"" "-I." "-IC:\Qt\5.6\msvc201564\include" "-IC:\Qt\5.6\msvc201564\include\QtTest" "-IC:\Qt\5.6\msvc201564\include\QtCore" "-I.\debug" "-IC:\Qt\5.6\msvc201564\mkspecs\win32-msvc2015" "-I$(QTDIR)\include\QtTest"</Command>
-    </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="Release\tst_xneurontesttest.moc">
+    </ClCompile>
+    <ClCompile Include="release\moc_ActivityFunction.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;.\tst_xneurontesttest.cpp</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing tst_xneurontesttest.cpp...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ConfigurationName)\%(Filename).moc</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "tst_xneurontesttest.cpp" -o "$(ConfigurationName)\%(Filename).moc"  -D_CONSOLE -DUNICODE -DWIN32 -DWIN64 "-DSRCDIR=\"C:/Users/Gaara of the Desert/git/qt/XNeuron/01_XNeuron/XNeuronTest/\"" -DQT_NO_DEBUG -DQT_TESTLIB_LIB -DQT_CORE_LIB "-DQT_TESTCASE_BUILDDIR=\"C:/Users/Gaara of the Desert/git/qt/XNeuron/01_XNeuron/XNeuronTest\"" -DNDEBUG "-I." "-IC:\Qt\5.6\msvc201564\include" "-IC:\Qt\5.6\msvc201564\include\QtTest" "-IC:\Qt\5.6\msvc201564\include\QtCore" "-I.\release" "-IC:\Qt\5.6\msvc201564\mkspecs\win32-msvc2015" "-I$(QTDIR)\include\QtTest"</Command>
+    </ClCompile>
+    <CustomBuild Include="debug\tst_xneurontesttest.moc">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">tst_xneurontesttest.cpp;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Qt\5.6\msvc201564\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DSRCDIR=\"C:/Users/Gaara/git/qt/XNeuron/01_XNeuron/XNeuronTest/\" -DQT_TESTLIB_LIB -DQT_CORE_LIB -DQT_TESTCASE_BUILDDIR="C:/Users/Gaara/git/qt/XNeuron/01_XNeuron/XNeuronTest" -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt/5.6/msvc201564/mkspecs/win32-msvc2015 -IC:/Users/Gaara/git/qt/XNeuron/01_XNeuron/XNeuronTest -IC:/Qt/5.6/msvc201564/include -IC:/Qt/5.6/msvc201564/include/QtTest -IC:/Qt/5.6/msvc201564/include/QtCore tst_xneurontesttest.cpp -o debug\tst_xneurontesttest.moc</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MOC tst_xneurontesttest.cpp</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">debug\tst_xneurontesttest.moc;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="release\tst_xneurontesttest.moc">
+      <FileType>Document</FileType>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">tst_xneurontesttest.cpp;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Qt\5.6\msvc201564\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DSRCDIR=\"C:/Users/Gaara/git/qt/XNeuron/01_XNeuron/XNeuronTest/\" -DQT_NO_DEBUG -DQT_TESTLIB_LIB -DQT_CORE_LIB -DQT_TESTCASE_BUILDDIR="C:/Users/Gaara/git/qt/XNeuron/01_XNeuron/XNeuronTest" -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt/5.6/msvc201564/mkspecs/win32-msvc2015 -IC:/Users/Gaara/git/qt/XNeuron/01_XNeuron/XNeuronTest -IC:/Qt/5.6/msvc201564/include -IC:/Qt/5.6/msvc201564/include/QtTest -IC:/Qt/5.6/msvc201564/include/QtCore tst_xneurontesttest.cpp -o release\tst_xneurontesttest.moc</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MOC tst_xneurontesttest.cpp</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">release\tst_xneurontesttest.moc;%(Outputs)</Outputs>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
-  <ProjectExtensions>
-    <VisualStudio>
-      <UserProperties UicDir=".\GeneratedFiles" RccDir=".\GeneratedFiles" Qt5Version_x0020_x64="qmake" />
-    </VisualStudio>
-  </ProjectExtensions>
 </Project>

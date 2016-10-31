@@ -1,0 +1,3 @@
+https://www.youtube.com/watch?v=7SM5OD2pZKY
+
+https://drthitirat.wordpress.com/2014/12/26/install-opencv-2-4-10-and-use-it-in-msvc-2013-and-qt-5-4-0-of-windows-8-1-64-bit-os-x64-based-processor/
